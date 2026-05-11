@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Модуль 2 — Продукт и клиент · MegaCityShop</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #2ABFC0;
+    --teal-dark: #1A9EA0;
+    --teal-light: #E0F7F7;
+    --black: #0D0D0D;
+    --gray-1: #F4F4F4;
+    --gray-2: #B0B0B0;
+    --white: #ffffff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', Arial, sans-serif; background: var(--gray-1); color: var(--black); }
+
+  .header {
+    background: var(--white); border-bottom: 1px solid #E8E8E8;
+    padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo img { height: 40px; }
+  .logo-sub { font-size: 11px; color: var(--gray-2); }
+  .back-btn { font-size: 14px; color: var(--teal); text-decoration: none; font-weight: 500; }
+  .back-btn:hover { color: var(--teal-dark); }
+
+  .progress-wrap { background: var(--white); border-bottom: 1px solid #E8E8E8; }
+  .progress-bar { padding: 12px 24px; display: flex; align-items: center; gap: 16px; max-width: 860px; margin: 0 auto; }
+  .progress-label { font-size: 12px; color: var(--gray-2); white-space: nowrap; }
+  .progress-track { flex: 1; height: 6px; background: #E8E8E8; border-radius: 3px; }
+  .progress-fill { height: 100%; width: 40%; background: var(--teal); border-radius: 3px; }
+  .progress-pct { font-size: 12px; font-weight: 600; color: var(--teal); white-space: nowrap; }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  .module-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--teal-light); color: var(--teal-dark);
+    font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    padding: 6px 16px; border-radius: 20px; margin-bottom: 16px;
+  }
+  .module-title { font-size: 32px; font-weight: 800; margin-bottom: 8px; line-height: 1.2; }
+  .module-sub { font-size: 16px; color: #666; margin-bottom: 32px; line-height: 1.6; }
+
+  /* VIDEO */
+  .video-block { background: var(--white); border: 1px solid #E8E8E8; border-radius: 16px; overflow: hidden; margin-bottom: 32px; }
+  .video-label { padding: 16px 24px 0; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); }
+  .video-title { padding: 6px 24px 16px; font-size: 18px; font-weight: 700; }
+  .video-container { position: relative; width: 100%; padding-bottom: 56.25%; background: #0D0D0D; }
+  .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+  .video-placeholder {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: #1a1a1a; color: #666; gap: 12px;
+  }
+  .video-placeholder .play-icon { width: 64px; height: 64px; border: 2px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .video-placeholder p { font-size: 13px; }
+  .video-duration { padding: 12px 24px 16px; font-size: 13px; color: var(--gray-2); }
+
+  /* CONTENT */
+  .content-block { background: var(--white); border: 1px solid #E8E8E8; border-radius: 16px; padding: 32px; margin-bottom: 24px; }
+  .content-block h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+  .content-block p { font-size: 15px; color: #444; line-height: 1.7; margin-bottom: 12px; }
+  .content-block p:last-child { margin-bottom: 0; }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); margin-bottom: 12px; }
+
+  /* PRODUCT TABS */
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .tab {
+    padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; border: 1px solid #E8E8E8; background: var(--white); color: #666;
+    transition: all 0.15s;
+  }
+  .tab.active { background: var(--teal); color: var(--white); border-color: var(--teal); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .category-card { background: var(--gray-1); border-radius: 10px; padding: 16px; }
+  .category-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--black); }
+  .category-card ul { list-style: none; }
+  .category-card ul li { font-size: 13px; color: #666; padding: 2px 0; }
+  .category-card ul li::before { content: "·  "; color: var(--teal); font-weight: 700; }
+
+  /* CLIENT TYPES */
+  .client-grid { display: flex; flex-direction: column; gap: 12px; }
+  .client-card {
+    display: flex; gap: 16px; align-items: flex-start;
+    background: var(--gray-1); border-radius: 12px; padding: 18px 20px;
+  }
+  .client-icon { font-size: 28px; flex-shrink: 0; }
+  .client-body h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .client-body p { font-size: 13px; color: #666; line-height: 1.5; }
+  .client-body .lpr { display: inline-block; margin-top: 6px; background: var(--teal-light); color: var(--teal-dark); font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+
+  /* MASCOT */
+  .mascot-block { background: var(--teal-light); border-radius: 12px; padding: 20px 24px; display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+  .mascot-block img { width: 56px; height: 56px; object-fit: cover; border-radius: 50%; flex-shrink: 0; }
+  .mascot-block p { font-size: 14px; color: #1A9EA0; line-height: 1.6; }
+  .mascot-block p strong { color: var(--teal-dark); }
+
+  /* QUIZ */
+  .quiz-block { background: var(--white); border: 1px solid #E8E8E8; border-radius: 16px; padding: 32px; margin-bottom: 24px; }
+  .quiz-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #E8E8E8; }
+  .quiz-icon { width: 44px; height: 44px; background: #FFF3E0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .quiz-header h2 { font-size: 20px; font-weight: 700; }
+  .quiz-header p { font-size: 13px; color: #777; margin-top: 2px; }
+
+  .question { margin-bottom: 28px; }
+  .question-text { font-size: 15px; font-weight: 600; margin-bottom: 12px; line-height: 1.5; }
+  .question-num { display: inline-block; background: var(--teal); color: var(--white); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 6px; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid #E8E8E8; border-radius: 8px; cursor: pointer; transition: border-color 0.15s, background 0.15s; font-size: 14px; }
+  .option:hover { border-color: var(--teal); background: var(--teal-light); }
+  .option input[type="radio"] { accent-color: var(--teal); width: 16px; height: 16px; flex-shrink: 0; }
+  .option.correct { border-color: #4CAF50; background: #E8F5E9; }
+  .option.wrong { border-color: #F44336; background: #FFEBEE; }
+  .option.show-correct { border-color: #4CAF50; background: #E8F5E9; }
+
+  .quiz-submit { width: 100%; margin-top: 28px; padding: 15px; background: var(--teal); color: var(--white); border: none; border-radius: 10px; font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; transition: background 0.2s; }
+  .quiz-submit:hover { background: var(--teal-dark); }
+  .quiz-submit:disabled { background: var(--gray-2); cursor: not-allowed; }
+
+  .quiz-result { display: none; margin-top: 20px; padding: 20px 24px; border-radius: 12px; text-align: center; }
+  .quiz-result.pass { background: #E8F5E9; border: 1px solid #4CAF50; }
+  .quiz-result.fail { background: #FFEBEE; border: 1px solid #F44336; }
+  .quiz-result .result-icon { font-size: 36px; margin-bottom: 8px; }
+  .quiz-result h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .quiz-result p { font-size: 14px; color: #555; }
+  .quiz-result .score { font-size: 28px; font-weight: 800; margin: 8px 0; }
+  .quiz-result.pass .score { color: #2E7D32; }
+  .quiz-result.fail .score { color: #C62828; }
+  .retry-btn { margin-top: 14px; padding: 10px 24px; background: transparent; border: 1px solid #F44336; border-radius: 8px; color: #F44336; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+
+  /* NAV */
+  .nav-buttons { display: flex; justify-content: space-between; gap: 12px; margin-top: 32px; }
+  .btn-secondary { padding: 14px 28px; border: 1px solid #E8E8E8; border-radius: 10px; background: var(--white); font-size: 15px; font-weight: 500; color: #666; cursor: pointer; font-family: 'Inter', sans-serif; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-primary { padding: 14px 32px; background: var(--teal); border: none; border-radius: 10px; font-size: 15px; font-weight: 600; color: var(--white); cursor: pointer; font-family: 'Inter', sans-serif; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: background 0.2s; }
+  .btn-primary:hover { background: var(--teal-dark); }
+
+  /* MODULE NAV */
+  .module-nav { background: var(--white); border-bottom: 1px solid #E8E8E8; padding: 0 24px; display: flex; align-items: center; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .mnav-item { padding: 12px 16px; font-size: 13px; font-weight: 600; color: #888; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.15s; flex-shrink: 0; }
+  .mnav-item:hover { color: var(--teal); }
+  .mnav-item.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+  @media (max-width: 600px) {
+    .module-title { font-size: 24px; }
+    .category-grid { grid-template-columns: 1fr; }
+    .nav-buttons { flex-direction: column; }
+    .btn-secondary, .btn-primary { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <img src="logo.png" alt="MegaCityShop">
+    <div class="logo-sub">Школа менеджера</div>
+  </div>
+  <a href="index.html" class="back-btn">← На главную</a>
+</div>
+<div class="module-nav">
+  <a href="module-0.html" class="mnav-item">Модуль 0</a>
+  <a href="module-1.html" class="mnav-item">Модуль 1</a>
+  <a href="module-2.html" class="mnav-item active">Модуль 2</a>
+  <a href="module-3.html" class="mnav-item">Модуль 3</a>
+  <a href="module-4.html" class="mnav-item">Модуль 4</a>
+  <a href="final-test.html" class="mnav-item">Тест</a>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-bar">
+    <span class="progress-label">Прогресс курса</span>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <span class="progress-pct">40%</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="module-badge">Модуль 2</div>
+  <h1 class="module-title">Продукт и клиент</h1>
+  <p class="module-sub">Изучи ассортимент и пойми кто наш покупатель — это основа любой продажи.</p>
+
+  <!-- VIDEO 1 -->
+  <div class="video-block">
+    <div class="video-label">Урок 2.1</div>
+    <div class="video-title">Обзор сайта MEGACITYSHOP.RU</div>
+    <div class="video-container">
+      <iframe src="https://vkvideo.ru/video_ext.php?oid=-204762579&id=456239071&hash=22e7e3ab9a13c9e1&hd=3" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="video-duration">⏱ Длительность: — мин</div>
+  </div>
+
+  <!-- VIDEO 2 -->
+  <div class="video-block">
+    <div class="video-label">Урок 2.2</div>
+    <div class="video-title">Обзор сайта MCOFFICE.RU</div>
+    <div class="video-container">
+      <iframe src="https://vkvideo.ru/video_ext.php?oid=-204762579&id=456239073&hash=12edcd6e2f3f8dbf&hd=3" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="video-duration">⏱ Длительность: — мин</div>
+  </div>
+
+  <!-- VIDEO 3 -->
+  <div class="video-block">
+    <div class="video-label">Урок 2.3</div>
+    <div class="video-title">Обзор сайта MEDMARKETPRO.RU</div>
+    <div class="video-container">
+      <iframe src="https://vkvideo.ru/video_ext.php?oid=-204762579&id=456239074&hash=223a057e09f19890&hd=3" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="video-duration">⏱ Длительность: — мин</div>
+  </div>
+
+  <!-- MASCOT -->
+  <div class="mascot-block">
+    <img src="semenovna.png" alt="Семёновна">
+    <p><strong>Сова Семёновна:</strong> Не нужно запоминать всё до последней детали. Важно понять логику — что и кому мы продаём. Остальное придёт с практикой.</p>
+  </div>
+
+  <!-- PRODUCT -->
+  <div class="content-block">
+    <h2>Наш ассортимент</h2>
+    <p>У нас два основных направления с отдельными сайтами. Менеджер должен понимать что находится на каждом из них.</p>
+
+    <div class="tabs" style="margin-top: 20px;">
+      <button class="tab active" onclick="switchTab('school')">🏫 Школьная и детская</button>
+      <button class="tab" onclick="switchTab('office')">🏢 Офисная</button>
+    </div>
+
+    <div class="tab-content active" id="tab-school">
+      <p style="margin-bottom:16px; font-size:13px; color:#666;">megacityshop.ru · 80% продаж компании</p>
+      <div class="category-grid">
+        <div class="category-card">
+          <h4>🏫 Школьная мебель</h4>
+          <ul>
+            <li>Ученические столы и стулья</li>
+            <li>Парты-трансформеры</li>
+            <li>Растущая мебель</li>
+            <li>Мебель по приказу 838</li>
+          </ul>
+        </div>
+        <div class="category-card">
+          <h4>👶 Детские сады</h4>
+          <ul>
+            <li>Столы и стулья детские</li>
+            <li>Кроватки детские</li>
+            <li>Игровая мебель</li>
+            <li>Мягкие модули</li>
+          </ul>
+        </div>
+        <div class="category-card">
+          <h4>📚 Учебные кабинеты</h4>
+          <ul>
+            <li>Классные доски</li>
+            <li>Шкафы лабораторные</li>
+            <li>Мебель для библиотек</li>
+            <li>Информационные стенды</li>
+          </ul>
+        </div>
+        <div class="category-card">
+          <h4>🍽️ Общественные помещения</h4>
+          <ul>
+            <li>Столовая мебель</li>
+            <li>Мягкие диваны и банкетки</li>
+            <li>Спортивное оборудование</li>
+            <li>Кухонное оборудование</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-office">
+      <p style="margin-bottom:16px; font-size:13px; color:#666;">mcoffice.ru · офисная и коммерческая мебель</p>
+      <div class="category-grid">
+        <div class="category-card">
+          <h4>💼 Рабочие места</h4>
+          <ul>
+            <li>Столы для персонала</li>
+            <li>Кресла и стулья</li>
+            <li>Компьютерные столы</li>
+            <li>Офисные перегородки</li>
+          </ul>
+        </div>
+        <div class="category-card">
+          <h4>👔 Кабинеты руководителей</h4>
+          <ul>
+            <li>Столы руководителя</li>
+            <li>Кресла премиум-класса</li>
+            <li>Шкафы и стеллажи</li>
+            <li>Приёмные и ресепшн</li>
+          </ul>
+        </div>
+        <div class="category-card">
+          <h4>🤝 Переговорные</h4>
+          <ul>
+            <li>Конференц-столы</li>
+            <li>Мягкая мебель</li>
+            <li>Интерактивное оборудование</li>
+            <li>Журнальные столы</li>
+          </ul>
+        </div>
+        <div class="category-card">
+          <h4>🔩 Металлическая мебель</h4>
+          <ul>
+            <li>Архивные шкафы</li>
+            <li>Стеллажи металлические</li>
+            <li>Сейфы</li>
+            <li>Верстаки</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENTS -->
+  <div class="content-block">
+    <h2>Кто наши клиенты и кто ЛПР</h2>
+    <p>ЛПР — лицо, принимающее решение. Это человек которому ты звонишь и с кем ведёшь переговоры. В разных организациях это разные люди.</p>
+    <div class="client-grid" style="margin-top: 16px;">
+      <div class="client-card">
+        <div class="client-icon">🏫</div>
+        <div class="client-body">
+          <h4>Школы и детские сады</h4>
+          <p>Закупки по бюджету. Работают по тендерам или прямым договорам. Важны сроки, документы и соответствие нормам.</p>
+          <span class="lpr">ЛПР: директор, завхоз, бухгалтер</span>
+        </div>
+      </div>
+      <div class="client-card">
+        <div class="client-icon">🏛️</div>
+        <div class="client-body">
+          <h4>Госструктуры / нац. проекты</h4>
+          <p>Бюджетное финансирование, работа по 44-ФЗ. Длинный цикл сделки. Нужны все закрывающие документы.</p>
+          <span class="lpr">ЛПР: руководитель, снабженец</span>
+        </div>
+      </div>
+      <div class="client-card">
+        <div class="client-icon">🏢</div>
+        <div class="client-body">
+          <h4>Коммерческие офисы</h4>
+          <p>Быстрее принимают решения. Важны качество, дизайн и сроки доставки.</p>
+          <span class="lpr">ЛПР: собственник, офис-менеджер</span>
+        </div>
+      </div>
+      <div class="client-card">
+        <div class="client-icon">🏥</div>
+        <div class="client-body">
+          <h4>Медицинские учреждения</h4>
+          <p>Специфические требования к материалам и сертификатам. Работают как по бюджету, так и коммерчески.</p>
+          <span class="lpr">ЛПР: главврач, снабженец</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHY US -->
+  <div class="content-block">
+    <h2>Почему клиенты выбирают нас</h2>
+    <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
+      <div style="display:flex; gap:12px; padding:14px 16px; background:var(--gray-1); border-radius:10px;">
+        <span style="font-size:20px;">🪟</span>
+        <div><strong style="font-size:14px;">Принцип одного окна</strong><br><span style="font-size:13px; color:#666;">Школьная, офисная и медицинская мебель — всё в одном месте. Клиент не ищет разных поставщиков.</span></div>
+      </div>
+      <div style="display:flex; gap:12px; padding:14px 16px; background:var(--gray-1); border-radius:10px;">
+        <span style="font-size:20px;">🚚</span>
+        <div><strong style="font-size:14px;">Доставка и сборка</strong><br><span style="font-size:13px; color:#666;">Мы не просто отгружаем — доставляем и собираем на месте. Клиент получает готовый результат.</span></div>
+      </div>
+      <div style="display:flex; gap:12px; padding:14px 16px; background:var(--gray-1); border-radius:10px;">
+        <span style="font-size:20px;">📋</span>
+        <div><strong style="font-size:14px;">Полный пакет документов</strong><br><span style="font-size:13px; color:#666;">Особенно важно для госзаказчиков — все сертификаты, накладные и акты.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-block">
+    <div class="quiz-header">
+      <div class="quiz-icon">📝</div>
+      <div>
+        <h2>Мини-тест — Модуль 2</h2>
+        <p>5 вопросов · Нужно ответить правильно на 4 из 5</p>
+      </div>
+    </div>
+
+    <div class="question" data-correct="c">
+      <div class="question-text"><span class="question-num">1</span>На каком сайте сосредоточено 80% продаж компании?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q1" value="a"> mcoffice.ru</label>
+        <label class="option"><input type="radio" name="q1" value="b"> medmarketpro.ru</label>
+        <label class="option"><input type="radio" name="q1" value="c"> megacityshop.ru</label>
+        <label class="option"><input type="radio" name="q1" value="d"> Все сайты дают равные продажи</label>
+      </div>
+    </div>
+
+    <div class="question" data-correct="a">
+      <div class="question-text"><span class="question-num">2</span>Что продаётся на сайте mcoffice.ru?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q2" value="a"> Офисная мебель — рабочие места, кабинеты, переговорные</label>
+        <label class="option"><input type="radio" name="q2" value="b"> Медицинская мебель и оборудование</label>
+        <label class="option"><input type="radio" name="q2" value="c"> Школьная и детская мебель</label>
+        <label class="option"><input type="radio" name="q2" value="d"> Мебель для гостиниц и ресторанов</label>
+      </div>
+    </div>
+
+    <div class="question" data-correct="c">
+      <div class="question-text"><span class="question-num">3</span>Что входит в ассортимент раздела «Детские сады» на megacityshop.ru?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q3" value="a"> Только столы и стулья</label>
+        <label class="option"><input type="radio" name="q3" value="b"> Только кроватки детские</label>
+        <label class="option"><input type="radio" name="q3" value="c"> Столы, стулья, кроватки, игровая мебель, мягкие модули</label>
+        <label class="option"><input type="radio" name="q3" value="d"> Спортивное оборудование и тренажёры</label>
+      </div>
+    </div>
+
+    <div class="question" data-correct="d">
+      <div class="question-text"><span class="question-num">4</span>Кто является ЛПР при продаже мебели в коммерческий офис?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q4" value="a"> Директор школы или завхоз</label>
+        <label class="option"><input type="radio" name="q4" value="b"> Главврач или снабженец</label>
+        <label class="option"><input type="radio" name="q4" value="c"> Муниципальный департамент</label>
+        <label class="option"><input type="radio" name="q4" value="d"> Собственник или офис-менеджер</label>
+      </div>
+    </div>
+
+    <div class="question" data-correct="b">
+      <div class="question-text"><span class="question-num">5</span>Что важно госзаказчику при работе с нами помимо самого товара?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q5" value="a"> Скидка от 30% и рассрочка</label>
+        <label class="option"><input type="radio" name="q5" value="b"> Полный пакет документов — сертификаты, накладные, акты</label>
+        <label class="option"><input type="radio" name="q5" value="c"> Наличие шоурума в их городе</label>
+        <label class="option"><input type="radio" name="q5" value="d"> Фирменная упаковка и брендирование</label>
+      </div>
+    </div>
+
+    <button class="quiz-submit" onclick="checkQuiz()">Проверить ответы</button>
+
+    <div class="quiz-result pass" id="quiz-pass">
+      <div class="result-icon">🎉</div>
+      <h3>Отлично!</h3>
+      <div class="score" id="score-pass"></div>
+      <p>Продукт и клиент — усвоено. Переходи к следующему модулю.</p>
+    </div>
+    <div class="quiz-result fail" id="quiz-fail">
+      <div class="result-icon">📖</div>
+      <h3>Нужно повторить</h3>
+      <div class="score" id="score-fail"></div>
+      <p>Пересмотри видео и перечитай материал — затем попробуй снова.</p>
+      <button class="retry-btn" onclick="retryQuiz()">Попробовать ещё раз</button>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav-buttons" id="nav-buttons" style="display:none;">
+    <a href="module-1.html" class="btn-secondary">← Модуль 1</a>
+    <a href="module-3.html" class="btn-primary">Модуль 3 →</a>
+  </div>
+
+</div>
+
+<div style="text-align:center; padding:24px; font-size:12px; color:#B0B0B0; border-top:1px solid #E8E8E8; background:var(--white);">
+  MegaCityShop · Школа менеджера · megacityshop.ru
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function checkQuiz() {
+  const questions = document.querySelectorAll('.question');
+  let correct = 0;
+  questions.forEach(q => {
+    const correctAnswer = q.dataset.correct;
+    const selected = q.querySelector('input[type="radio"]:checked');
+    const options = q.querySelectorAll('.option');
+    options.forEach(opt => opt.classList.remove('correct', 'wrong', 'show-correct'));
+    if (selected) {
+      const selectedOption = selected.closest('.option');
+      if (selected.value === correctAnswer) {
+        correct++;
+        selectedOption.classList.add('correct');
+      } else {
+        selectedOption.classList.add('wrong');
+        options.forEach(opt => { if (opt.querySelector('input').value === correctAnswer) opt.classList.add('show-correct'); });
+      }
+    } else {
+      options.forEach(opt => { if (opt.querySelector('input').value === correctAnswer) opt.classList.add('show-correct'); });
+    }
+    q.querySelectorAll('input').forEach(inp => inp.disabled = true);
+  });
+  document.querySelector('.quiz-submit').disabled = true;
+  const total = questions.length;
+  if (correct >= total - 1) {
+    document.getElementById('quiz-pass').style.display = 'block';
+    document.getElementById('score-pass').textContent = correct + ' из ' + total;
+    document.getElementById('nav-buttons').style.display = 'flex';
+  } else {
+    document.getElementById('quiz-fail').style.display = 'block';
+    document.getElementById('score-fail').textContent = correct + ' из ' + total;
+  }
+}
+
+function retryQuiz() {
+  document.querySelectorAll('.question').forEach(q => {
+    q.querySelectorAll('input').forEach(inp => { inp.disabled = false; inp.checked = false; });
+    q.querySelectorAll('.option').forEach(opt => opt.classList.remove('correct', 'wrong', 'show-correct'));
+  });
+  document.querySelector('.quiz-submit').disabled = false;
+  document.getElementById('quiz-pass').style.display = 'none';
+  document.getElementById('quiz-fail').style.display = 'none';
+  window.scrollTo({ top: document.querySelector('.quiz-block').offsetTop - 80, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Школа менеджера — MegaCityShop</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #2ABFC0;
+    --teal-dark: #1A9EA0;
+    --teal-light: #E0F7F7;
+    --cream: #F5E4C0;
+    --black: #0D0D0D;
+    --gray-1: #F4F4F4;
+    --gray-2: #B0B0B0;
+    --white: #ffffff;
+    --success: #4CAF50;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: var(--gray-1);
+    color: var(--black);
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--white);
+    border-bottom: 1px solid #E8E8E8;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--teal);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--white);
+  }
+  .logo-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.2;
+  }
+  .logo-sub {
+    font-size: 11px;
+    color: var(--gray-2);
+    font-weight: 400;
+  }
+  .header-badge {
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+  }
+
+  /* HERO */
+  .hero {
+    background: url('hero2.jpg') center center / cover no-repeat;
+    padding: 64px 24px 48px;
+    text-align: center;
+    border-bottom: 1px solid #E8E8E8;
+    position: relative;
+  }
+  .hero-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 48px 48px 40px;
+    max-width: 560px;
+    margin: 0 auto;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+  }
+  .hero-eyebrow {
+    display: inline-block;
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1.15;
+    max-width: 640px;
+    margin: 0 auto 16px;
+    color: var(--black);
+  }
+  .hero h1 span { color: var(--teal); }
+  .hero-sub {
+    font-size: 17px;
+    color: #555;
+    max-width: 520px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
+  }
+  .hero-cta {
+    display: inline-block;
+    background: var(--teal);
+    color: var(--white);
+    font-size: 16px;
+    font-weight: 600;
+    padding: 16px 40px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+  .hero-cta:hover { background: var(--teal-dark); }
+  .hero-note {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--gray-2);
+  }
+
+  /* MASCOT BANNER */
+  .mascot-banner {
+    background: linear-gradient(135deg, #2ABFC0 0%, #1A9EA0 100%);
+    margin: 32px 24px;
+    border-radius: 16px;
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .mascot-emoji {
+    font-size: 56px;
+    flex-shrink: 0;
+  }
+  .mascot-text h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .mascot-text p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+  }
+
+  /* WARNING BLOCK */
+  .warning-block {
+    background: #FFF8E1;
+    border: 1px solid #FFD54F;
+    border-radius: 12px;
+    padding: 20px 24px;
+    max-width: 800px;
+    margin: 0 auto 32px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .warning-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+  .warning-text { font-size: 14px; line-height: 1.6; color: #5D4037; }
+  .warning-text strong { color: #E65100; }
+
+  /* SECTION */
+  .section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 24px 48px;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--black);
+  }
+
+  /* MODULES */
+  .modules { display: flex; flex-direction: column; gap: 12px; }
+  .module {
+    background: var(--white);
+    border: 1px solid #E8E8E8;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .module-num {
+    width: 44px;
+    height: 44px;
+    background: var(--teal-light);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--teal);
+    flex-shrink: 0;
+  }
+  .module.final .module-num {
+    background: #FFF8E1;
+    color: #F9A825;
+  }
+  .module-body { flex: 1; }
+  .module-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 3px;
+    color: var(--black);
+  }
+  .module-desc {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.5;
+  }
+  .module-tag {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .tag-video { background: #E3F2FD; color: #1565C0; }
+  .tag-text { background: #F3E5F5; color: #6A1B9A; }
+  .tag-practice { background: #E8F5E9; color: #2E7D32; }
+  .tag-test { background: #FFF3E0; color: #E65100; }
+
+  /* STATS */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+  .stat {
+    background: var(--white);
+    border: 1px solid #E8E8E8;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--teal);
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.4;
+  }
+
+  /* WHAT YOU GET */
+  .benefits { display: flex; flex-direction: column; gap: 10px; }
+  .benefit {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--white);
+    border: 1px solid #E8E8E8;
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .benefit-icon { font-size: 20px; flex-shrink: 0; }
+  .benefit-text { font-size: 14px; line-height: 1.5; color: #444; }
+  .benefit-text strong { color: var(--black); }
+
+  /* CTA BOTTOM */
+  .cta-bottom {
+    background: var(--black);
+    border-radius: 16px;
+    padding: 40px 32px;
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .cta-bottom h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+  .cta-bottom p {
+    font-size: 15px;
+    color: var(--gray-2);
+    margin-bottom: 24px;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: var(--gray-2);
+    border-top: 1px solid #E8E8E8;
+    background: var(--white);
+  }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 28px; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .mascot-banner { flex-direction: column; text-align: center; }
+    .module { flex-wrap: wrap; }
+    .module-tag { margin-left: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <img src="logo.png" alt="MegaCityShop" style="height:56px;">
+    <div>
+      <div class="logo-sub" style="margin-top:2px;">Школа менеджера</div>
+    </div>
+  </div>
+  <div class="header-badge">Онбординг</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-card">
+    <div class="hero-eyebrow">Добро пожаловать</div>
+    <h1>Обучение перед<br><span>первым созвоном</span></h1>
+    <p class="hero-sub">Пройди 4 модуля, сдай тест — и мы назначим встречу. Это займёт 1–2 часа в удобном для тебя темпе.</p>
+    <a href="module-0.html" class="hero-cta">Начать обучение</a>
+    <p class="hero-note">Бесплатно · Онлайн · В своём темпе</p>
+  </div>
+</div>
+
+<!-- HIRING TERMS BANNER TOP -->
+<div style="max-width:800px; margin: 32px auto 0; padding: 0 24px;">
+  <a href="hiring-terms.html" style="text-decoration:none;">
+  <div style="background:#0D0D0D; border-radius:16px; padding:24px 28px; display:flex; align-items:center; justify-content:space-between; gap:20px; cursor:pointer; margin-bottom:16px;">
+    <div>
+      <div style="font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#2ABFC0; margin-bottom:6px;">Вакансия</div>
+      <div style="font-size:18px; font-weight:800; color:#fff; margin-bottom:4px;">Условия найма</div>
+      <div style="font-size:13px; color:#888;">График, оклад, премия, оформление и испытательный срок</div>
+    </div>
+    <div style="font-size:24px; color:#2ABFC0; flex-shrink:0;">→</div>
+  </div>
+  </a>
+</div>
+
+<!-- MASCOT -->
+<div style="max-width:800px; margin: 0 auto 0; padding: 0 24px;">
+  <div class="mascot-banner">
+    <img src="semenovna.png" alt="Семёновна" style="width:80px;height:80px;object-fit:cover;border-radius:50%;flex-shrink:0;">
+    <div class="mascot-text">
+      <h3>Привет! Я Сова Семёновна, эксперт MegaCityShop</h3>
+      <p>Я проведу тебя через всё обучение. Не торопись — здесь важно разобраться, а не просто "пролистать". После заполнения анкеты Дмитрий свяжется с тобой лично.</p>
+    </div>
+  </div>
+</div>
+
+<!-- WARNING -->
+<div style="max-width:800px; margin: 16px auto 0; padding: 0 24px;">
+  <div class="warning-block">
+    <div class="warning-icon">⚠️</div>
+    <div class="warning-text">
+      <strong>Важно перед стартом:</strong> Этот курс создан для менеджеров с опытом в продажах мебели, стройматериалов, оборудования для образования или медицины. Если твой опыт в телекоме, IT или других нишах — скорее всего нам не подойдём друг другу на этом этапе.
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="section" style="padding-top: 40px;">
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">4</div>
+      <div class="stat-label">модуля обучения</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">1–2</div>
+      <div class="stat-label">часов на прохождение</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">80%</div>
+      <div class="stat-label">проходной балл теста</div>
+    </div>
+  </div>
+
+  <!-- MODULES -->
+  <div class="section-label">Программа</div>
+  <div class="section-title">Что тебя ждёт</div>
+
+  <div class="modules">
+    <a href="module-0.html" style="text-decoration:none; color:inherit;">
+    <div class="module" style="border-color: #2ABFC0; border-width: 2px; cursor:pointer;">
+      <div class="module-num" style="background: #2ABFC0; color: #fff;">0</div>
+      <div class="module-body">
+        <div class="module-title">Как проходит обучение и зачем это нужно</div>
+        <div class="module-desc">Структура курса, что тебя ждёт и что происходит после заполнения анкеты</div>
+      </div>
+      <span class="module-tag tag-text">Старт →</span>
+    </div>
+    </a>
+
+    <a href="module-1.html" style="text-decoration:none; color:inherit;">
+    <div class="module" style="cursor:pointer;">
+      <div class="module-num">1</div>
+      <div class="module-body">
+        <div class="module-title">Знакомство с компанией</div>
+        <div class="module-desc">3 сайта, кто наш покупатель, как устроен бизнес, как мы работаем</div>
+      </div>
+      <span class="module-tag tag-text">Текст →</span>
+    </div>
+    </a>
+
+    <a href="module-2.html" style="text-decoration:none; color:inherit;">
+    <div class="module" style="cursor:pointer;">
+      <div class="module-num">2</div>
+      <div class="module-body">
+        <div class="module-title">Продукт и клиент</div>
+        <div class="module-desc">Категории мебели, чем отличаемся, кто принимает решение о покупке</div>
+      </div>
+      <span class="module-tag tag-text">Текст →</span>
+    </div>
+    </a>
+
+    <a href="module-3.html" style="text-decoration:none; color:inherit;">
+    <div class="module" style="cursor:pointer;">
+      <div class="module-num">3</div>
+      <div class="module-body">
+        <div class="module-title">Продажа и возражения</div>
+        <div class="module-desc">Цикл сделки — 16 шагов, типичные возражения, как на них отвечать</div>
+      </div>
+      <span class="module-tag tag-text">Текст →</span>
+    </div>
+    </a>
+
+    <a href="module-4.html" style="text-decoration:none; color:inherit;">
+    <div class="module" style="cursor:pointer;">
+      <div class="module-num">4</div>
+      <div class="module-body">
+        <div class="module-title">Инструменты менеджера</div>
+        <div class="module-desc">Битрикс24, таблица рентабельности, шаблон КП — скринкасты с практикой</div>
+      </div>
+      <span class="module-tag tag-video">Видео →</span>
+    </div>
+    </a>
+
+    <a href="final-test.html" style="text-decoration:none; color:inherit;">
+    <div class="module final" style="cursor:pointer;">
+      <div class="module-num">✓</div>
+      <div class="module-body">
+        <div class="module-title">Финальный тест + анкета</div>
+        <div class="module-desc">20 вопросов по всем модулям. После прохождения — анкета с контактами и файлом расчёта</div>
+      </div>
+      <span class="module-tag tag-test">Тест →</span>
+    </div>
+    </a>
+  </div>
+</div>
+
+<!-- BENEFITS -->
+<div class="section">
+  <div class="section-label">После обучения</div>
+  <div class="section-title">Что ты получишь</div>
+  <div class="benefits">
+    <div class="benefit">
+      <div class="benefit-icon">🏢</div>
+      <div class="benefit-text"><strong>Понимание бизнеса</strong> — как устроена компания, три направления, кто покупает и почему</div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon">📦</div>
+      <div class="benefit-text"><strong>Знание продукта</strong> — ассортимент школьной, офисной и медицинской мебели, ключевые отличия</div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon">💬</div>
+      <div class="benefit-text"><strong>Навык продажи</strong> — как вести сделку, отрабатывать возражения, делать КП</div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon">🖥️</div>
+      <div class="benefit-text"><strong>Работа в Битрикс24</strong> — как обрабатывать заявки, вести клиента по воронке</div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon">📋</div>
+      <div class="benefit-text"><strong>Таблица рентабельности и КП</strong> — умеешь считать сделку и отправлять предложение клиенту</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA BOTTOM -->
+<div class="section">
+  <div class="cta-bottom">
+    <h2>Готов начать?</h2>
+    <p>Пройди обучение — и получи приглашение на созвон с руководителем</p>
+    <a href="module-0.html" class="hero-cta">Начать обучение →</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  MegaCityShop · Школа менеджера · megacityshop.ru
+</div>
+
+</body>
+</html>

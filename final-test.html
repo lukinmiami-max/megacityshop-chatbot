@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Финальный тест · MegaCityShop</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #2ABFC0;
+    --teal-dark: #1A9EA0;
+    --teal-light: #E0F7F7;
+    --black: #0D0D0D;
+    --gray-1: #F4F4F4;
+    --gray-2: #B0B0B0;
+    --white: #ffffff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', Arial, sans-serif; background: var(--gray-1); color: var(--black); }
+
+  .header { background: var(--white); border-bottom: 1px solid #E8E8E8; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo img { height: 40px; }
+  .logo-sub { font-size: 11px; color: var(--gray-2); }
+  .back-btn { font-size: 14px; color: var(--teal); text-decoration: none; font-weight: 500; }
+
+  .progress-wrap { background: var(--white); border-bottom: 1px solid #E8E8E8; }
+  .progress-bar { padding: 12px 24px; display: flex; align-items: center; gap: 16px; max-width: 800px; margin: 0 auto; }
+  .progress-label { font-size: 12px; color: var(--gray-2); white-space: nowrap; }
+  .progress-track { flex: 1; height: 6px; background: #E8E8E8; border-radius: 3px; }
+  .progress-fill { height: 100%; background: var(--teal); border-radius: 3px; transition: width 0.3s; }
+  .progress-pct { font-size: 12px; font-weight: 600; color: var(--teal); white-space: nowrap; }
+
+  .wrap { max-width: 800px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* HERO */
+  .test-hero { background: var(--black); border-radius: 16px; padding: 32px; margin-bottom: 32px; display: flex; gap: 24px; align-items: center; }
+  .test-hero-icon { font-size: 56px; flex-shrink: 0; }
+  .test-hero h1 { font-size: 28px; font-weight: 800; color: var(--white); margin-bottom: 8px; }
+  .test-hero p { font-size: 14px; color: var(--gray-2); line-height: 1.6; }
+  .test-hero-stats { display: flex; gap: 20px; margin-top: 14px; }
+  .test-stat { text-align: center; }
+  .test-stat-num { font-size: 22px; font-weight: 800; color: var(--teal); }
+  .test-stat-label { font-size: 11px; color: var(--gray-2); margin-top: 2px; }
+
+  /* SECTION DIVIDER */
+  .section-divider { display: flex; align-items: center; gap: 12px; margin: 32px 0 20px; }
+  .section-divider-line { flex: 1; height: 1px; background: #E8E8E8; }
+  .section-divider-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); white-space: nowrap; padding: 4px 12px; background: var(--teal-light); border-radius: 20px; }
+
+  /* QUESTIONS */
+  .question { background: var(--white); border: 1px solid #E8E8E8; border-radius: 12px; padding: 24px; margin-bottom: 12px; }
+  .question-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+  .question-num { width: 32px; height: 32px; background: var(--teal); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--white); flex-shrink: 0; }
+  .question-text { font-size: 15px; font-weight: 600; line-height: 1.5; padding-top: 4px; }
+  .options { display: flex; flex-direction: column; gap: 8px; padding-left: 44px; }
+  .option { display: flex; align-items: center; gap: 12px; padding: 11px 16px; border: 1px solid #E8E8E8; border-radius: 8px; cursor: pointer; transition: border-color 0.15s, background 0.15s; font-size: 14px; color: #333; }
+  .option:hover { border-color: var(--teal); background: var(--teal-light); }
+  .option input[type="radio"] { accent-color: var(--teal); width: 16px; height: 16px; flex-shrink: 0; }
+  .option.correct { border-color: #4CAF50; background: #E8F5E9; }
+  .option.wrong { border-color: #F44336; background: #FFEBEE; }
+  .option.show-correct { border-color: #4CAF50; background: #E8F5E9; }
+
+  /* SUBMIT */
+  .submit-block { background: var(--white); border: 1px solid #E8E8E8; border-radius: 16px; padding: 32px; margin-top: 24px; text-align: center; }
+  .submit-block p { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.6; }
+  .submit-btn { width: 100%; padding: 16px; background: var(--teal); color: var(--white); border: none; border-radius: 10px; font-size: 16px; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; transition: background 0.2s; }
+  .submit-btn:hover { background: var(--teal-dark); }
+  .submit-btn:disabled { background: var(--gray-2); cursor: not-allowed; }
+
+  /* RESULT */
+  .result-block { display: none; border-radius: 16px; padding: 40px 32px; text-align: center; margin-top: 24px; }
+  .result-block.pass { background: #E8F5E9; border: 2px solid #4CAF50; }
+  .result-block.fail { background: #FFEBEE; border: 2px solid #F44336; }
+  .result-icon { font-size: 56px; margin-bottom: 16px; }
+  .result-block h2 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+  .result-block.pass h2 { color: #2E7D32; }
+  .result-block.fail h2 { color: #C62828; }
+  .result-score { font-size: 48px; font-weight: 800; margin: 12px 0; }
+  .result-block.pass .result-score { color: #2E7D32; }
+  .result-block.fail .result-score { color: #C62828; }
+  .result-block p { font-size: 15px; color: #555; line-height: 1.7; max-width: 480px; margin: 0 auto; }
+  .result-contacts { background: var(--white); border-radius: 12px; padding: 20px 24px; margin-top: 20px; text-align: left; }
+  .result-contacts h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .result-contacts p { font-size: 13px; color: #666; margin: 0; }
+  .retry-btn { margin-top: 20px; padding: 12px 28px; background: transparent; border: 2px solid #F44336; border-radius: 8px; color: #C62828; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+
+
+  /* MODULE NAV */
+  .module-nav { background: var(--white); border-bottom: 1px solid #E8E8E8; padding: 0 24px; display: flex; align-items: center; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .mnav-item { padding: 12px 16px; font-size: 13px; font-weight: 600; color: #888; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.15s; flex-shrink: 0; }
+  .mnav-item:hover { color: var(--teal); }
+  .mnav-item.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+  @media (max-width: 600px) {
+    .test-hero { flex-direction: column; text-align: center; }
+    .test-hero-stats { justify-content: center; }
+    .options { padding-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <img src="logo.png" alt="MegaCityShop">
+    <div class="logo-sub">Школа менеджера</div>
+  </div>
+  <a href="index.html" class="back-btn">← На главную</a>
+</div>
+<div class="module-nav">
+  <a href="module-0.html" class="mnav-item">Модуль 0</a>
+  <a href="module-1.html" class="mnav-item">Модуль 1</a>
+  <a href="module-2.html" class="mnav-item">Модуль 2</a>
+  <a href="module-3.html" class="mnav-item">Модуль 3</a>
+  <a href="module-4.html" class="mnav-item">Модуль 4</a>
+  <a href="final-test.html" class="mnav-item active">Тест</a>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-bar">
+    <span class="progress-label">Прогресс теста</span>
+    <div class="progress-track"><div class="progress-fill" id="test-progress" style="width:0%"></div></div>
+    <span class="progress-pct" id="test-progress-pct">0 / 20</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="test-hero">
+    <div class="test-hero-icon">🎯</div>
+    <div>
+      <h1>Финальный тест</h1>
+      <p>Ответь на все вопросы по пройденным модулям. Результат отправится автоматически.</p>
+      <div class="test-hero-stats">
+        <div class="test-stat">
+          <div class="test-stat-num">20</div>
+          <div class="test-stat-label">вопросов</div>
+        </div>
+        <div class="test-stat">
+          <div class="test-stat-num">80%</div>
+          <div class="test-stat-label">проходной балл</div>
+        </div>
+        <div class="test-stat">
+          <div class="test-stat-num">16</div>
+          <div class="test-stat-label">минимум правильных</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE 1 -->
+  <div class="section-divider">
+    <div class="section-divider-line"></div>
+    <div class="section-divider-label">Модуль 1 — Знакомство с компанией</div>
+    <div class="section-divider-line"></div>
+  </div>
+
+  <div class="question" data-correct="b">
+    <div class="question-header">
+      <div class="question-num">1</div>
+      <div class="question-text">Сколько сайтов у компании MegaCityShop и что на каждом продаётся?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q1" value="a"> Один сайт — megacityshop.ru, вся мебель в одном месте</label>
+      <label class="option"><input type="radio" name="q1" value="b"> Три сайта: школьная мебель, офисная мебель, медицинская мебель</label>
+      <label class="option"><input type="radio" name="q1" value="c"> Два сайта: школьная и офисная мебель</label>
+      <label class="option"><input type="radio" name="q1" value="d"> Четыре сайта по регионам России</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="a">
+    <div class="question-header">
+      <div class="question-num">2</div>
+      <div class="question-text">На каком сайте сосредоточено 80% продаж компании?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q2" value="a"> megacityshop.ru</label>
+      <label class="option"><input type="radio" name="q2" value="b"> mcoffice.ru</label>
+      <label class="option"><input type="radio" name="q2" value="c"> medmarketpro.ru</label>
+      <label class="option"><input type="radio" name="q2" value="d"> Все сайты дают равные продажи</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="c">
+    <div class="question-header">
+      <div class="question-num">3</div>
+      <div class="question-text">Как работают менеджеры компании?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q3" value="a"> В офисе в Москве, только на входящих звонках</label>
+      <label class="option"><input type="radio" name="q3" value="b"> В офисе, занимаются холодными звонками</label>
+      <label class="option"><input type="radio" name="q3" value="c"> Полностью удалённо, обрабатывают входящие заявки с сайтов</label>
+      <label class="option"><input type="radio" name="q3" value="d"> Частично удалённо, частично в офисе</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="d">
+    <div class="question-header">
+      <div class="question-num">4</div>
+      <div class="question-text">В чём главное удобство для клиента при работе с MegaCityShop?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q4" value="a"> Самые низкие цены на рынке</label>
+      <label class="option"><input type="radio" name="q4" value="b"> Офисы в каждом городе России</label>
+      <label class="option"><input type="radio" name="q4" value="c"> Бесплатная доставка для всех клиентов</label>
+      <label class="option"><input type="radio" name="q4" value="d"> Принцип одного окна — вся нужная мебель в одном месте</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="b">
+    <div class="question-header">
+      <div class="question-num">5</div>
+      <div class="question-text">Какие дополнительные услуги предлагает компания?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q5" value="a"> Аренда мебели и лизинг</label>
+      <label class="option"><input type="radio" name="q5" value="b"> Доставка и сборка мебели</label>
+      <label class="option"><input type="radio" name="q5" value="c"> Дизайн-проект и 3D-визуализация</label>
+      <label class="option"><input type="radio" name="q5" value="d"> Гарантийный ремонт и замена</label>
+    </div>
+  </div>
+
+  <!-- MODULE 2 -->
+  <div class="section-divider">
+    <div class="section-divider-line"></div>
+    <div class="section-divider-label">Модуль 2 — Продукт и клиент</div>
+    <div class="section-divider-line"></div>
+  </div>
+
+  <div class="question" data-correct="c">
+    <div class="question-header">
+      <div class="question-num">6</div>
+      <div class="question-text">Что продаётся на сайте mcoffice.ru?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q6" value="a"> Медицинская мебель и оборудование</label>
+      <label class="option"><input type="radio" name="q6" value="b"> Школьная и детская мебель</label>
+      <label class="option"><input type="radio" name="q6" value="c"> Офисная мебель — рабочие места, кабинеты, переговорные</label>
+      <label class="option"><input type="radio" name="q6" value="d"> Мебель для гостиниц и ресторанов</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="b">
+    <div class="question-header">
+      <div class="question-num">7</div>
+      <div class="question-text">Кто является ЛПР при продаже мебели в школу?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q7" value="a"> Учитель или классный руководитель</label>
+      <label class="option"><input type="radio" name="q7" value="b"> Директор, завхоз или бухгалтер</label>
+      <label class="option"><input type="radio" name="q7" value="c"> Родительский комитет</label>
+      <label class="option"><input type="radio" name="q7" value="d"> Муниципальный департамент образования</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="a">
+    <div class="question-header">
+      <div class="question-num">8</div>
+      <div class="question-text">Кто является ЛПР при продаже мебели в коммерческий офис?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q8" value="a"> Собственник бизнеса или офис-менеджер</label>
+      <label class="option"><input type="radio" name="q8" value="b"> Директор школы или завхоз</label>
+      <label class="option"><input type="radio" name="q8" value="c"> Главврач или снабженец</label>
+      <label class="option"><input type="radio" name="q8" value="d"> Муниципальный департамент</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="d">
+    <div class="question-header">
+      <div class="question-num">9</div>
+      <div class="question-text">Что особенно важно госзаказчику при работе с нами помимо самого товара?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q9" value="a"> Скидка от 30% и рассрочка платежа</label>
+      <label class="option"><input type="radio" name="q9" value="b"> Наличие шоурума в их городе</label>
+      <label class="option"><input type="radio" name="q9" value="c"> Фирменная упаковка и брендирование</label>
+      <label class="option"><input type="radio" name="q9" value="d"> Полный пакет документов — сертификаты, накладные, акты, УПД</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="c">
+    <div class="question-header">
+      <div class="question-num">10</div>
+      <div class="question-text">Что входит в ассортимент сайта megacityshop.ru?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q10" value="a"> Только парты и стулья для школ</label>
+      <label class="option"><input type="radio" name="q10" value="b"> Только офисная и медицинская мебель</label>
+      <label class="option"><input type="radio" name="q10" value="c"> Школьная мебель, мебель для детских садов, учебных кабинетов и общественных помещений</label>
+      <label class="option"><input type="radio" name="q10" value="d"> Только мебель по приказу 838 Минпросвещения</label>
+    </div>
+  </div>
+
+  <!-- MODULE 3 -->
+  <div class="section-divider">
+    <div class="section-divider-line"></div>
+    <div class="section-divider-label">Модуль 3 — Продажа и возражения</div>
+    <div class="section-divider-line"></div>
+  </div>
+
+  <div class="question" data-correct="b">
+    <div class="question-header">
+      <div class="question-num">11</div>
+      <div class="question-text">Сколько времени есть у менеджера чтобы перезвонить клиенту после поступления заявки?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q11" value="a"> 1 час</label>
+      <label class="option"><input type="radio" name="q11" value="b"> 15 минут</label>
+      <label class="option"><input type="radio" name="q11" value="c"> До конца рабочего дня</label>
+      <label class="option"><input type="radio" name="q11" value="d"> 30 минут</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="c">
+    <div class="question-header">
+      <div class="question-num">12</div>
+      <div class="question-text">Когда отправляется заказ на производство?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q12" value="a"> После подписания договора клиентом</label>
+      <label class="option"><input type="radio" name="q12" value="b"> После устного согласия клиента</label>
+      <label class="option"><input type="radio" name="q12" value="c"> После поступления оплаты от клиента</label>
+      <label class="option"><input type="radio" name="q12" value="d"> После отправки КП клиенту</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="d">
+    <div class="question-header">
+      <div class="question-num">13</div>
+      <div class="question-text">Когда сделка считается закрытой?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q13" value="a"> После получения оплаты от клиента</label>
+      <label class="option"><input type="radio" name="q13" value="b"> После доставки товара клиенту</label>
+      <label class="option"><input type="radio" name="q13" value="c"> После сборки мебели на месте</label>
+      <label class="option"><input type="radio" name="q13" value="d"> После подписания УПД</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="a">
+    <div class="question-header">
+      <div class="question-num">14</div>
+      <div class="question-text">Какой процент от суммы сделки получает менеджер и когда?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q14" value="a"> 3% — в последний день расчётного месяца</label>
+      <label class="option"><input type="radio" name="q14" value="b"> 5% — сразу после закрытия сделки</label>
+      <label class="option"><input type="radio" name="q14" value="c"> 10% — раз в квартал</label>
+      <label class="option"><input type="radio" name="q14" value="d"> 1% — еженедельно</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="b">
+    <div class="question-header">
+      <div class="question-num">15</div>
+      <div class="question-text">Клиент говорит: «Вы из Москвы, далеко от нас». Лучший ответ:</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q15" value="a"> «Да, но мы доставим в любой регион за дополнительную плату»</label>
+      <label class="option"><input type="radio" name="q15" value="b"> «У нас несколько производственных площадок — изготовим на той, которая ближе к вам, это снизит и сроки, и стоимость доставки»</label>
+      <label class="option"><input type="radio" name="q15" value="c"> «Расстояние не проблема, просто немного увеличатся сроки»</label>
+      <label class="option"><input type="radio" name="q15" value="d"> «Мы снизим цену чтобы компенсировать расстояние»</label>
+    </div>
+  </div>
+
+  <!-- MODULE 4 -->
+  <div class="section-divider">
+    <div class="section-divider-line"></div>
+    <div class="section-divider-label">Модуль 4 — Инструменты менеджера</div>
+    <div class="section-divider-line"></div>
+  </div>
+
+  <div class="question" data-correct="c">
+    <div class="question-header">
+      <div class="question-num">16</div>
+      <div class="question-text">Где ведётся вся работа с клиентами, сделками и задачами?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q16" value="a"> В личной Excel-таблице менеджера</label>
+      <label class="option"><input type="radio" name="q16" value="b"> В Google Таблицах компании</label>
+      <label class="option"><input type="radio" name="q16" value="c"> В Битрикс24</label>
+      <label class="option"><input type="radio" name="q16" value="d"> В любой удобной CRM на выбор менеджера</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="b">
+    <div class="question-header">
+      <div class="question-num">17</div>
+      <div class="question-text">Что обязательно нужно сделать перед отправкой КП клиенту?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q17" value="a"> Согласовать список позиций с клиентом по телефону</label>
+      <label class="option"><input type="radio" name="q17" value="b"> Заполнить расчёт рентабельности по шаблону</label>
+      <label class="option"><input type="radio" name="q17" value="c"> Получить предоплату от клиента</label>
+      <label class="option"><input type="radio" name="q17" value="d"> Подписать договор о намерениях</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="a">
+    <div class="question-header">
+      <div class="question-num">18</div>
+      <div class="question-text">Где создаётся коммерческое предложение для клиента?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q18" value="a"> В Битрикс24 по шаблону компании</label>
+      <label class="option"><input type="radio" name="q18" value="b"> В Word — своими руками</label>
+      <label class="option"><input type="radio" name="q18" value="c"> В Google Docs</label>
+      <label class="option"><input type="radio" name="q18" value="d"> В любом формате, главное отправить вовремя</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="d">
+    <div class="question-header">
+      <div class="question-num">19</div>
+      <div class="question-text">Что нужно сделать сразу после отправки КП клиенту?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q19" value="a"> Позвонить и уточнить получил ли клиент письмо</label>
+      <label class="option"><input type="radio" name="q19" value="b"> Ждать ответа от клиента</label>
+      <label class="option"><input type="radio" name="q19" value="c"> Отправить КП повторно на всякий случай</label>
+      <label class="option"><input type="radio" name="q19" value="d"> Поставить напоминание на следующее касание в CRM</label>
+    </div>
+  </div>
+
+  <div class="question" data-correct="b">
+    <div class="question-header">
+      <div class="question-num">20</div>
+      <div class="question-text">Что фиксируется в CRM при работе с клиентом?</div>
+    </div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q20" value="a"> Только финальный результат — закрыта сделка или нет</label>
+      <label class="option"><input type="radio" name="q20" value="b"> Каждое касание с клиентом — звонок, письмо, сообщение</label>
+      <label class="option"><input type="radio" name="q20" value="c"> Только входящие звонки от клиентов</label>
+      <label class="option"><input type="radio" name="q20" value="d"> Только оплаты и подписанные документы</label>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-block" id="submit-block">
+    <p>Ответь на все 20 вопросов и нажми кнопку. Для прохождения нужно набрать минимум <strong>16 правильных ответов из 20 (80%)</strong>.</p>
+    <button class="submit-btn" onclick="submitTest()">Отправить ответы</button>
+  </div>
+
+  <!-- RESULT PASS -->
+  <div class="result-block pass" id="result-pass">
+    <div class="result-icon">🏆</div>
+    <h2>Тест пройден!</h2>
+    <div class="result-score" id="score-pass-text"></div>
+    <p>Отличный результат! Заполни анкету ниже — укажи контакты, загрузи файл расчёта и ответь на три вопроса. После этого Дмитрий свяжется с тобой в течение 1–2 рабочих дней.</p>
+  </div>
+
+  <!-- YANDEX FORM -->
+  <div id="form-block" style="display:none; margin-top: 24px;">
+    <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px;">
+      <div style="width:44px;height:44px;background:#E0F7F7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">📋</div>
+      <h2 style="font-size:20px;font-weight:700;">Заполни анкету</h2>
+    </div>
+    <p style="font-size:14px;color:#666;margin-bottom:20px;line-height:1.6;padding-left:58px;">Укажи имя, телефон и Telegram, загрузи заполненный файл расчёта из Модуля 4 и ответь на три коротких ситуационных вопроса.</p>
+    <div style="background:#E0F7F7; border-radius:16px; padding:24px;">
+      <script src="https://forms.yandex.ru/_static/embed.js"></script>
+      <iframe src="https://forms.yandex.ru/cloud/69fc926449363900134f1c2a?iframe=1" frameborder="0" name="ya-form-69fc926449363900134f1c2a" width="100%" style="min-height:900px; border:none; display:block;"></iframe>
+    </div>
+  </div>
+
+
+  <!-- RESULT FAIL -->
+  <div class="result-block fail" id="result-fail">
+    <div class="result-icon">📖</div>
+    <h2>Тест не пройден</h2>
+    <div class="result-score" id="score-fail-text"></div>
+    <p>Не расстраивайся — вернись к модулям, повтори материал и попробуй снова. Нужно набрать минимум 16 правильных ответов.</p>
+    <button class="retry-btn" onclick="retryTest()">Пройти тест заново</button>
+  </div>
+
+</div>
+
+<div style="text-align:center; padding:24px; font-size:12px; color:#B0B0B0; border-top:1px solid #E8E8E8; background:var(--white);">
+  MegaCityShop · Школа менеджера · megacityshop.ru
+</div>
+
+<script>
+const answers = { q1:'b', q2:'a', q3:'c', q4:'d', q5:'b', q6:'c', q7:'b', q8:'a', q9:'d', q10:'c', q11:'b', q12:'c', q13:'d', q14:'a', q15:'b', q16:'c', q17:'b', q18:'a', q19:'d', q20:'b' };
+const total = 20;
+const passScore = 16;
+
+document.querySelectorAll('input[type="radio"]').forEach(input => {
+  input.addEventListener('change', updateProgress);
+});
+
+function updateProgress() {
+  const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+  const pct = Math.round((answered / total) * 100);
+  document.getElementById('test-progress').style.width = pct + '%';
+  document.getElementById('test-progress-pct').textContent = answered + ' / ' + total;
+}
+
+function submitTest() {
+  let correct = 0;
+  document.querySelectorAll('.question').forEach((q, i) => {
+    const name = 'q' + (i + 1);
+    const correctAnswer = answers[name];
+    const selected = q.querySelector('input[type="radio"]:checked');
+    const options = q.querySelectorAll('.option');
+    options.forEach(opt => opt.classList.remove('correct', 'wrong', 'show-correct'));
+    if (selected) {
+      const selectedOption = selected.closest('.option');
+      if (selected.value === correctAnswer) {
+        correct++;
+        selectedOption.classList.add('correct');
+      } else {
+        selectedOption.classList.add('wrong');
+        options.forEach(opt => { if (opt.querySelector('input').value === correctAnswer) opt.classList.add('show-correct'); });
+      }
+    } else {
+      options.forEach(opt => { if (opt.querySelector('input').value === correctAnswer) opt.classList.add('show-correct'); });
+    }
+    q.querySelectorAll('input').forEach(inp => inp.disabled = true);
+  });
+
+  document.querySelector('.submit-btn').disabled = true;
+  document.getElementById('submit-block').style.display = 'none';
+
+  window._testScore = correct;
+  if (correct >= passScore) {
+    document.getElementById('score-pass-text').textContent = correct + ' из ' + total;
+    document.getElementById('result-pass').style.display = 'block';
+    document.getElementById('form-block').style.display = 'block';
+  } else {
+    document.getElementById('score-fail-text').textContent = correct + ' из ' + total;
+    document.getElementById('result-fail').style.display = 'block';
+  }
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
+
+function retryTest() {
+  document.querySelectorAll('.question').forEach(q => {
+    q.querySelectorAll('input').forEach(inp => { inp.disabled = false; inp.checked = false; });
+    q.querySelectorAll('.option').forEach(opt => opt.classList.remove('correct', 'wrong', 'show-correct'));
+  });
+  document.querySelector('.submit-btn').disabled = false;
+  document.getElementById('submit-block').style.display = 'block';
+  document.getElementById('result-pass').style.display = 'none';
+  document.getElementById('result-fail').style.display = 'none';
+  document.getElementById('form-block').style.display = 'none';
+  document.getElementById('test-progress').style.width = '0%';
+  document.getElementById('test-progress-pct').textContent = '0 / 20';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

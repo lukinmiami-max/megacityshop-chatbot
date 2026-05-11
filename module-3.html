@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Модуль 3 — Продажа и возражения · MegaCityShop</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #2ABFC0;
+    --teal-dark: #1A9EA0;
+    --teal-light: #E0F7F7;
+    --black: #0D0D0D;
+    --gray-1: #F4F4F4;
+    --gray-2: #B0B0B0;
+    --white: #ffffff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', Arial, sans-serif; background: var(--gray-1); color: var(--black); }
+
+  .header { background: var(--white); border-bottom: 1px solid #E8E8E8; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo img { height: 40px; }
+  .logo-sub { font-size: 11px; color: var(--gray-2); }
+  .back-btn { font-size: 14px; color: var(--teal); text-decoration: none; font-weight: 500; }
+
+  .progress-wrap { background: var(--white); border-bottom: 1px solid #E8E8E8; }
+  .progress-bar { padding: 12px 24px; display: flex; align-items: center; gap: 16px; max-width: 860px; margin: 0 auto; }
+  .progress-label { font-size: 12px; color: var(--gray-2); white-space: nowrap; }
+  .progress-track { flex: 1; height: 6px; background: #E8E8E8; border-radius: 3px; }
+  .progress-fill { height: 100%; width: 60%; background: var(--teal); border-radius: 3px; }
+  .progress-pct { font-size: 12px; font-weight: 600; color: var(--teal); white-space: nowrap; }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  .module-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--teal-light); color: var(--teal-dark); font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; margin-bottom: 16px; }
+  .module-title { font-size: 32px; font-weight: 800; margin-bottom: 8px; line-height: 1.2; }
+  .module-sub { font-size: 16px; color: #666; margin-bottom: 32px; line-height: 1.6; }
+
+  /* VIDEO */
+  .video-block { background: var(--white); border: 1px solid #E8E8E8; border-radius: 16px; overflow: hidden; margin-bottom: 32px; }
+  .video-label { padding: 16px 24px 0; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); }
+  .video-title { padding: 6px 24px 16px; font-size: 18px; font-weight: 700; }
+  .video-container { position: relative; width: 100%; padding-bottom: 56.25%; background: #0D0D0D; }
+  .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+  .video-placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #1a1a1a; color: #666; gap: 12px; }
+  .video-placeholder .play-icon { width: 64px; height: 64px; border: 2px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .video-placeholder p { font-size: 13px; }
+  .video-duration { padding: 12px 24px 16px; font-size: 13px; color: var(--gray-2); }
+
+  /* CONTENT */
+  .content-block { background: var(--white); border: 1px solid #E8E8E8; border-radius: 16px; padding: 32px; margin-bottom: 24px; }
+  .content-block h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+  .content-block p { font-size: 15px; color: #444; line-height: 1.7; margin-bottom: 12px; }
+
+  /* CYCLE STEPS */
+  .cycle { display: flex; flex-direction: column; gap: 0; }
+  .cycle-step { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid #F0F0F0; }
+  .cycle-step:last-child { border-bottom: none; }
+  .cycle-num { width: 36px; height: 36px; background: var(--teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--white); flex-shrink: 0; margin-top: 2px; }
+  .cycle-num.money { background: #4CAF50; }
+  .cycle-body h4 { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .cycle-body p { font-size: 13px; color: #666; line-height: 1.5; margin: 0; }
+  .cycle-tag { display: inline-block; margin-top: 4px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+  .tag-crm { background: #E3F2FD; color: #1565C0; }
+  .tag-client { background: #F3E5F5; color: #6A1B9A; }
+  .tag-docs { background: #FFF8E1; color: #E65100; }
+  .tag-money { background: #E8F5E9; color: #2E7D32; }
+
+  /* OBJECTIONS */
+  .objection { background: var(--gray-1); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+  .objection-q { display: flex; align-items: center; gap: 12px; padding: 16px 20px; cursor: pointer; }
+  .objection-icon { font-size: 20px; flex-shrink: 0; }
+  .objection-q-text { font-size: 15px; font-weight: 600; color: var(--black); flex: 1; }
+  .objection-toggle { font-size: 18px; color: var(--teal); font-weight: 700; flex-shrink: 0; transition: transform 0.2s; }
+  .objection.open .objection-toggle { transform: rotate(45deg); }
+  .objection-a { display: none; padding: 0 20px 16px 52px; font-size: 14px; color: #444; line-height: 1.7; border-top: 1px solid #E8E8E8; padding-top: 14px; }
+  .objection.open .objection-a { display: block; }
+  .objection-a strong { color: var(--teal-dark); }
+
+  /* MASCOT */
+  .mascot-block { background: var(--teal-light); border-radius: 12px; padding: 20px 24px; display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+  .mascot-block img { width: 56px; height: 56px; object-fit: cover; border-radius: 50%; flex-shrink: 0; }
+  .mascot-block p { font-size: 14px; color: #1A9EA0; line-height: 1.6; }
+
+  /* COMMISSION BLOCK */
+  .commission-block { background: var(--black); border-radius: 16px; padding: 32px; margin-bottom: 24px; display: flex; gap: 24px; align-items: center; }
+  .commission-num { font-size: 64px; font-weight: 800; color: var(--teal); flex-shrink: 0; line-height: 1; }
+  .commission-text h3 { font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+  .commission-text p { font-size: 14px; color: var(--gray-2); line-height: 1.6; }
+  .commission-text span { color: var(--teal); }
+
+  /* QUIZ */
+  .quiz-block { background: var(--white); border: 1px solid #E8E8E8; border-radius: 16px; padding: 32px; margin-bottom: 24px; }
+  .quiz-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #E8E8E8; }
+  .quiz-icon { width: 44px; height: 44px; background: #FFF3E0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .quiz-header h2 { font-size: 20px; font-weight: 700; }
+  .quiz-header p { font-size: 13px; color: #777; margin-top: 2px; }
+  .question { margin-bottom: 28px; }
+  .question-text { font-size: 15px; font-weight: 600; margin-bottom: 12px; line-height: 1.5; }
+  .question-num { display: inline-block; background: var(--teal); color: var(--white); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 6px; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid #E8E8E8; border-radius: 8px; cursor: pointer; transition: border-color 0.15s, background 0.15s; font-size: 14px; }
+  .option:hover { border-color: var(--teal); background: var(--teal-light); }
+  .option input[type="radio"] { accent-color: var(--teal); width: 16px; height: 16px; flex-shrink: 0; }
+  .option.correct { border-color: #4CAF50; background: #E8F5E9; }
+  .option.wrong { border-color: #F44336; background: #FFEBEE; }
+  .option.show-correct { border-color: #4CAF50; background: #E8F5E9; }
+  .quiz-submit { width: 100%; margin-top: 28px; padding: 15px; background: var(--teal); color: var(--white); border: none; border-radius: 10px; font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; transition: background 0.2s; }
+  .quiz-submit:hover { background: var(--teal-dark); }
+  .quiz-submit:disabled { background: var(--gray-2); cursor: not-allowed; }
+  .quiz-result { display: none; margin-top: 20px; padding: 20px 24px; border-radius: 12px; text-align: center; }
+  .quiz-result.pass { background: #E8F5E9; border: 1px solid #4CAF50; }
+  .quiz-result.fail { background: #FFEBEE; border: 1px solid #F44336; }
+  .quiz-result .result-icon { font-size: 36px; margin-bottom: 8px; }
+  .quiz-result h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .quiz-result p { font-size: 14px; color: #555; }
+  .quiz-result .score { font-size: 28px; font-weight: 800; margin: 8px 0; }
+  .quiz-result.pass .score { color: #2E7D32; }
+  .quiz-result.fail .score { color: #C62828; }
+  .retry-btn { margin-top: 14px; padding: 10px 24px; background: transparent; border: 1px solid #F44336; border-radius: 8px; color: #F44336; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+
+  /* NAV */
+  .nav-buttons { display: flex; justify-content: space-between; gap: 12px; margin-top: 32px; }
+  .btn-secondary { padding: 14px 28px; border: 1px solid #E8E8E8; border-radius: 10px; background: var(--white); font-size: 15px; font-weight: 500; color: #666; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-primary { padding: 14px 32px; background: var(--teal); border: none; border-radius: 10px; font-size: 15px; font-weight: 600; color: var(--white); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: background 0.2s; }
+  .btn-primary:hover { background: var(--teal-dark); }
+
+  /* MODULE NAV */
+  .module-nav { background: var(--white); border-bottom: 1px solid #E8E8E8; padding: 0 24px; display: flex; align-items: center; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .mnav-item { padding: 12px 16px; font-size: 13px; font-weight: 600; color: #888; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.15s; flex-shrink: 0; }
+  .mnav-item:hover { color: var(--teal); }
+  .mnav-item.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+  @media (max-width: 600px) {
+    .module-title { font-size: 24px; }
+    .commission-block { flex-direction: column; text-align: center; }
+    .nav-buttons { flex-direction: column; }
+    .btn-secondary, .btn-primary { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <img src="logo.png" alt="MegaCityShop">
+    <div class="logo-sub">Школа менеджера</div>
+  </div>
+  <a href="index.html" class="back-btn">← На главную</a>
+</div>
+<div class="module-nav">
+  <a href="module-0.html" class="mnav-item">Модуль 0</a>
+  <a href="module-1.html" class="mnav-item">Модуль 1</a>
+  <a href="module-2.html" class="mnav-item">Модуль 2</a>
+  <a href="module-3.html" class="mnav-item active">Модуль 3</a>
+  <a href="module-4.html" class="mnav-item">Модуль 4</a>
+  <a href="final-test.html" class="mnav-item">Тест</a>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-bar">
+    <span class="progress-label">Прогресс курса</span>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <span class="progress-pct">60%</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="module-badge">Модуль 3</div>
+  <h1 class="module-title">Продажа и возражения</h1>
+  <p class="module-sub">Изучи полный цикл сделки — от первого звонка до закрытия — и научись работать с возражениями.</p>
+
+
+  <!-- MASCOT -->
+  <div class="mascot-block">
+    <img src="semenovna.png" alt="Семёновна">
+    <p><strong>Сова Семёновна:</strong> Цикл сделки — это твой главный рабочий инструмент. Знай его наизусть. Каждый шаг важен — пропустишь один, потеряешь сделку.</p>
+  </div>
+
+  <!-- CYCLE -->
+  <div class="content-block">
+    <h2>Цикл сделки — 16 шагов</h2>
+    <p>Каждая сделка проходит через эти этапы. Отклонение от процесса — причина потери клиента.</p>
+    <div class="cycle" style="margin-top: 20px;">
+
+      <div class="cycle-step">
+        <div class="cycle-num">1</div>
+        <div class="cycle-body">
+          <h4>Заявка пришла в CRM</h4>
+          <p>Новая заявка автоматически появляется в Битрикс24. Немедленно берёшь в работу.</p>
+          <span class="cycle-tag tag-crm">CRM</span>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num">2</div>
+        <div class="cycle-body">
+          <h4>Звонок клиенту — в течение 15 минут</h4>
+          <p>Обязательно уточни: торгующая организация или конечный клиент? Прямой договор или тендер по 44-ФЗ? Когда планируется закупка? Какой товар нужен?</p>
+          <span class="cycle-tag tag-client">Клиент</span>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num">3</div>
+        <div class="cycle-body">
+          <h4>Пауза на подготовку КП</h4>
+          <p>Изучаешь запрос, подбираешь позиции из каталога, уточняешь наличие и сроки.</p>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num">4</div>
+        <div class="cycle-body">
+          <h4>Заполнение сделки в CRM</h4>
+          <p>Вносишь данные клиента, реквизиты организации, параметры заказа. Всё фиксируется в Битрикс24.</p>
+          <span class="cycle-tag tag-crm">CRM</span>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num">5</div>
+        <div class="cycle-body">
+          <h4>Расчёт рентабельности по шаблону</h4>
+          <p>Заполняешь Excel-файл расчёта — проверяешь что сделка выгодна компании. Подробнее — в следующем модуле.</p>
+          <span class="cycle-tag tag-docs">Документы</span>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num">6</div>
+        <div class="cycle-body">
+          <h4>Формирование КП через Битрикс24</h4>
+          <p>Создаёшь коммерческое предложение по шаблону прямо в CRM. Подробнее — в следующем модуле.</p>
+          <span class="cycle-tag tag-crm">CRM</span>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num">7</div>
+        <div class="cycle-body">
+          <h4>Отправка КП клиенту</h4>
+          <p>Высылаешь КП на email клиента. Дублируешь в мессенджер если есть контакт.</p>
+          <span class="cycle-tag tag-client">Клиент</span>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num">8</div>
+        <div class="cycle-body">
+          <h4>Напоминание в CRM</h4>
+          <p>Сразу ставишь задачу на следующее касание — через 1–2 дня. Без напоминания — клиент забудет о тебе.</p>
+          <span class="cycle-tag tag-crm">CRM</span>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num">9</div>
+        <div class="cycle-body">
+          <h4>Периодические касания</h4>
+          <p>Регулярно напоминаешь о себе — звонок, сообщение, уточнение статуса. Клиент должен помнить про тебя.</p>
+          <span class="cycle-tag tag-client">Клиент</span>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num">10</div>
+        <div class="cycle-body">
+          <h4>Клиент готов — выставляем счёт и договор</h4>
+          <p>Формируешь счёт и договор прямо в Битрикс24 по шаблону.</p>
+          <span class="cycle-tag tag-docs">Документы</span>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num">11</div>
+        <div class="cycle-body">
+          <h4>Отправка документов клиенту</h4>
+          <p>Высылаешь счёт и договор на подписание.</p>
+          <span class="cycle-tag tag-client">Клиент</span>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num">12</div>
+        <div class="cycle-body">
+          <h4>Подписание договора</h4>
+          <p>По сканам или через ЭДО (электронный документооборот). Оба варианта допустимы.</p>
+          <span class="cycle-tag tag-docs">Документы</span>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num">13</div>
+        <div class="cycle-body">
+          <h4>Поступление оплаты → заказ на производство</h4>
+          <p>После подтверждения оплаты отправляешь заказ на производство. До оплаты — не отправляем.</p>
+          <span class="cycle-tag tag-money">Оплата</span>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num">14</div>
+        <div class="cycle-body">
+          <h4>Производство готово → задача логисту</h4>
+          <p>Когда производство сообщило о готовности — ставишь задачу логисту на доставку.</p>
+          <span class="cycle-tag tag-crm">CRM</span>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num">15</div>
+        <div class="cycle-body">
+          <h4>Доставка и сборка</h4>
+          <p>Товар доехал до клиента — организуешь сборку через местных сборщиков. Сборщики есть в каждом городе.</p>
+          <span class="cycle-tag tag-client">Клиент</span>
+        </div>
+      </div>
+
+      <div class="cycle-step">
+        <div class="cycle-num money">16</div>
+        <div class="cycle-body">
+          <h4>Закрытие сделки</h4>
+          <p>УПД подписаны = сделка закрыта. Ты получаешь <strong>3% от суммы сделки</strong> в последний день расчётного месяца.</p>
+          <span class="cycle-tag tag-money">Комиссия</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- COMMISSION -->
+  <div class="commission-block">
+    <div class="commission-num">3%</div>
+    <div class="commission-text">
+      <h3>Твоя комиссия с каждой закрытой сделки</h3>
+      <p>Сделка считается закрытой когда <span>УПД подписаны</span>.<br>Выплата — в последний день расчётного месяца по итогам всех закрытых сделок.</p>
+    </div>
+  </div>
+
+  <!-- OBJECTIONS -->
+  <div class="content-block">
+    <h2>Работа с возражениями</h2>
+    <p>Возражение — это не отказ. Это вопрос который требует ответа. Нажми на каждое возражение чтобы увидеть как отвечать.</p>
+
+    <div style="margin-top: 20px;">
+
+      <div class="objection" onclick="toggleObj(this)">
+        <div class="objection-q">
+          <div class="objection-icon">💰</div>
+          <div class="objection-q-text">«У вас дорого»</div>
+          <div class="objection-toggle">+</div>
+        </div>
+        <div class="objection-a">
+          <strong>Ответ:</strong> У нас средние цены по рынку. При этом вы получаете всё в одном месте — не нужно искать разных поставщиков для разных категорий. Плюс доставка и сборка включены. Давайте сравним конкретные позиции — пришлите что вам предлагают, я покажу нашу цену.
+        </div>
+      </div>
+
+      <div class="objection" onclick="toggleObj(this)">
+        <div class="objection-q">
+          <div class="objection-icon">📍</div>
+          <div class="objection-q-text">«Вы далеко, вы из Москвы»</div>
+          <div class="objection-toggle">+</div>
+        </div>
+        <div class="objection-a">
+          <strong>Ответ:</strong> У нас несколько производственных площадок — мы сможем изготовить на той, которая ближе к вам. Это снизит и сроки, и стоимость доставки.
+        </div>
+      </div>
+
+      <div class="objection" onclick="toggleObj(this)">
+        <div class="objection-q">
+          <div class="objection-icon">📋</div>
+          <div class="objection-q-text">«Нам нужно по 44-ФЗ, вы участвуете в тендерах?»</div>
+          <div class="objection-toggle">+</div>
+        </div>
+        <div class="objection-a">
+          <strong>Ответ:</strong> Да, мы работаем по 44-ФЗ и полностью готовим все необходимые документы — сертификаты, накладные, акты, УПД. Скажите площадку и номер тендера — мы изучим и подготовим всё что нужно для участия.
+        </div>
+      </div>
+
+      <div class="objection" onclick="toggleObj(this)">
+        <div class="objection-q">
+          <div class="objection-icon">🚚</div>
+          <div class="objection-q-text">«Слишком долго ждать доставку»</div>
+          <div class="objection-toggle">+</div>
+        </div>
+        <div class="objection-a">
+          <strong>Ответ:</strong> Сроки зависят от объёма и конкретных позиций — часть есть на складе и отгружается быстро. Давайте уточним ваш список — я скажу точные сроки по каждой позиции. Когда вам нужно получить товар?
+        </div>
+      </div>
+
+      <div class="objection" onclick="toggleObj(this)">
+        <div class="objection-q">
+          <div class="objection-icon">🤝</div>
+          <div class="objection-q-text">«Мы уже работаем с другим поставщиком»</div>
+          <div class="objection-toggle">+</div>
+        </div>
+        <div class="objection-a">
+          <strong>Ответ:</strong> Понимаю, у вас уже есть проверенный партнёр. Предлагаю просто сравнить КП по следующей закупке — ничего не теряете. Наш принцип одного окна часто оказывается удобнее когда нужны разные категории мебели одновременно.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-block">
+    <div class="quiz-header">
+      <div class="quiz-icon">📝</div>
+      <div>
+        <h2>Мини-тест — Модуль 3</h2>
+        <p>5 вопросов · Нужно ответить правильно на 4 из 5</p>
+      </div>
+    </div>
+
+    <div class="question" data-correct="b">
+      <div class="question-text"><span class="question-num">1</span>Сколько времени есть у менеджера чтобы перезвонить клиенту после поступления заявки?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q1" value="a"> 1 час</label>
+        <label class="option"><input type="radio" name="q1" value="b"> 15 минут</label>
+        <label class="option"><input type="radio" name="q1" value="c"> До конца рабочего дня</label>
+        <label class="option"><input type="radio" name="q1" value="d"> 30 минут</label>
+      </div>
+    </div>
+
+    <div class="question" data-correct="c">
+      <div class="question-text"><span class="question-num">2</span>Когда отправляется заказ на производство?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q2" value="a"> После подписания договора</label>
+        <label class="option"><input type="radio" name="q2" value="b"> После отправки КП клиенту</label>
+        <label class="option"><input type="radio" name="q2" value="c"> После поступления оплаты от клиента</label>
+        <label class="option"><input type="radio" name="q2" value="d"> После устного согласия клиента</label>
+      </div>
+    </div>
+
+    <div class="question" data-correct="d">
+      <div class="question-text"><span class="question-num">3</span>Когда сделка считается закрытой?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q3" value="a"> После получения оплаты</label>
+        <label class="option"><input type="radio" name="q3" value="b"> После доставки товара</label>
+        <label class="option"><input type="radio" name="q3" value="c"> После сборки мебели</label>
+        <label class="option"><input type="radio" name="q3" value="d"> После подписания УПД</label>
+      </div>
+    </div>
+
+    <div class="question" data-correct="a">
+      <div class="question-text"><span class="question-num">4</span>Какой процент от суммы сделки получает менеджер?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q4" value="a"> 3%</label>
+        <label class="option"><input type="radio" name="q4" value="b"> 5%</label>
+        <label class="option"><input type="radio" name="q4" value="c"> 10%</label>
+        <label class="option"><input type="radio" name="q4" value="d"> 1%</label>
+      </div>
+    </div>
+
+    <div class="question" data-correct="b">
+      <div class="question-text"><span class="question-num">5</span>Клиент говорит: «Вы далеко, вы из Москвы». Что отвечаешь?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q5" value="a"> «Да, мы московская компания, но доставим в любой регион»</label>
+        <label class="option"><input type="radio" name="q5" value="b"> «У нас несколько производственных площадок — изготовим на той, которая ближе к вам, это снизит сроки и стоимость доставки»</label>
+        <label class="option"><input type="radio" name="q5" value="c"> «Расстояние не проблема, мы работаем по всей России»</label>
+        <label class="option"><input type="radio" name="q5" value="d"> «Мы можем снизить цену чтобы компенсировать доставку»</label>
+      </div>
+    </div>
+
+    <button class="quiz-submit" onclick="checkQuiz()">Проверить ответы</button>
+
+    <div class="quiz-result pass" id="quiz-pass">
+      <div class="result-icon">🎉</div>
+      <h3>Отлично!</h3>
+      <div class="score" id="score-pass"></div>
+      <p>Цикл сделки и возражения — усвоено. Переходи к последнему модулю.</p>
+    </div>
+    <div class="quiz-result fail" id="quiz-fail">
+      <div class="result-icon">📖</div>
+      <h3>Нужно повторить</h3>
+      <div class="score" id="score-fail"></div>
+      <p>Пересмотри видео и перечитай материал — затем попробуй снова.</p>
+      <button class="retry-btn" onclick="retryQuiz()">Попробовать ещё раз</button>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav-buttons" id="nav-buttons" style="display:none;">
+    <a href="module-2.html" class="btn-secondary">← Модуль 2</a>
+    <a href="module-4.html" class="btn-primary">Модуль 4 →</a>
+  </div>
+
+</div>
+
+<div style="text-align:center; padding:24px; font-size:12px; color:#B0B0B0; border-top:1px solid #E8E8E8; background:var(--white);">
+  MegaCityShop · Школа менеджера · megacityshop.ru
+</div>
+
+<script>
+function toggleObj(el) {
+  el.classList.toggle('open');
+}
+
+function checkQuiz() {
+  const questions = document.querySelectorAll('.question');
+  let correct = 0;
+  questions.forEach(q => {
+    const correctAnswer = q.dataset.correct;
+    const selected = q.querySelector('input[type="radio"]:checked');
+    const options = q.querySelectorAll('.option');
+    options.forEach(opt => opt.classList.remove('correct', 'wrong', 'show-correct'));
+    if (selected) {
+      const selectedOption = selected.closest('.option');
+      if (selected.value === correctAnswer) {
+        correct++;
+        selectedOption.classList.add('correct');
+      } else {
+        selectedOption.classList.add('wrong');
+        options.forEach(opt => { if (opt.querySelector('input').value === correctAnswer) opt.classList.add('show-correct'); });
+      }
+    } else {
+      options.forEach(opt => { if (opt.querySelector('input').value === correctAnswer) opt.classList.add('show-correct'); });
+    }
+    q.querySelectorAll('input').forEach(inp => inp.disabled = true);
+  });
+  document.querySelector('.quiz-submit').disabled = true;
+  const total = questions.length;
+  if (correct >= total - 1) {
+    document.getElementById('quiz-pass').style.display = 'block';
+    document.getElementById('score-pass').textContent = correct + ' из ' + total;
+    document.getElementById('nav-buttons').style.display = 'flex';
+  } else {
+    document.getElementById('quiz-fail').style.display = 'block';
+    document.getElementById('score-fail').textContent = correct + ' из ' + total;
+  }
+}
+
+function retryQuiz() {
+  document.querySelectorAll('.question').forEach(q => {
+    q.querySelectorAll('input').forEach(inp => { inp.disabled = false; inp.checked = false; });
+    q.querySelectorAll('.option').forEach(opt => opt.classList.remove('correct', 'wrong', 'show-correct'));
+  });
+  document.querySelector('.quiz-submit').disabled = false;
+  document.getElementById('quiz-pass').style.display = 'none';
+  document.getElementById('quiz-fail').style.display = 'none';
+  window.scrollTo({ top: document.querySelector('.quiz-block').offsetTop - 80, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

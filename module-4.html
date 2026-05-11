@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Модуль 4 — Инструменты менеджера · MegaCityShop</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #2ABFC0;
+    --teal-dark: #1A9EA0;
+    --teal-light: #E0F7F7;
+    --black: #0D0D0D;
+    --gray-1: #F4F4F4;
+    --gray-2: #B0B0B0;
+    --white: #ffffff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', Arial, sans-serif; background: var(--gray-1); color: var(--black); }
+
+  .header { background: var(--white); border-bottom: 1px solid #E8E8E8; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo img { height: 40px; }
+  .logo-sub { font-size: 11px; color: var(--gray-2); }
+  .back-btn { font-size: 14px; color: var(--teal); text-decoration: none; font-weight: 500; }
+
+  .progress-wrap { background: var(--white); border-bottom: 1px solid #E8E8E8; }
+  .progress-bar { padding: 12px 24px; display: flex; align-items: center; gap: 16px; max-width: 860px; margin: 0 auto; }
+  .progress-label { font-size: 12px; color: var(--gray-2); white-space: nowrap; }
+  .progress-track { flex: 1; height: 6px; background: #E8E8E8; border-radius: 3px; }
+  .progress-fill { height: 100%; width: 80%; background: var(--teal); border-radius: 3px; }
+  .progress-pct { font-size: 12px; font-weight: 600; color: var(--teal); white-space: nowrap; }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  .module-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--teal-light); color: var(--teal-dark); font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; margin-bottom: 16px; }
+  .module-title { font-size: 32px; font-weight: 800; margin-bottom: 8px; line-height: 1.2; }
+  .module-sub { font-size: 16px; color: #666; margin-bottom: 32px; line-height: 1.6; }
+
+  /* VIDEO BLOCK */
+  .video-block { background: var(--white); border: 1px solid #E8E8E8; border-radius: 16px; overflow: hidden; margin-bottom: 24px; }
+  .video-header { padding: 20px 24px 16px; display: flex; align-items: center; gap: 14px; }
+  .video-num { width: 40px; height: 40px; background: var(--teal); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: var(--white); flex-shrink: 0; }
+  .video-meta { flex: 1; }
+  .video-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); margin-bottom: 3px; }
+  .video-title { font-size: 18px; font-weight: 700; color: var(--black); }
+  .video-container { position: relative; width: 100%; padding-bottom: 56.25%; background: #0D0D0D; }
+  .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+  .video-placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #1a1a1a; color: #666; gap: 12px; }
+  .video-placeholder .play-icon { width: 64px; height: 64px; border: 2px solid #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .video-placeholder p { font-size: 13px; }
+  .video-tips { padding: 16px 24px; border-top: 1px solid #F0F0F0; }
+  .video-tips-title { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--gray-2); margin-bottom: 10px; }
+  .tips-list { display: flex; flex-direction: column; gap: 6px; }
+  .tip { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #555; line-height: 1.5; }
+  .tip::before { content: "→"; color: var(--teal); font-weight: 700; flex-shrink: 0; }
+
+  /* CONTENT */
+  .content-block { background: var(--white); border: 1px solid #E8E8E8; border-radius: 16px; padding: 32px; margin-bottom: 24px; }
+  .content-block h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+  .content-block p { font-size: 15px; color: #444; line-height: 1.7; margin-bottom: 12px; }
+  .content-block p:last-child { margin-bottom: 0; }
+
+  /* MASCOT */
+  .mascot-block { background: var(--teal-light); border-radius: 12px; padding: 20px 24px; display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+  .mascot-block img { width: 56px; height: 56px; object-fit: cover; border-radius: 50%; flex-shrink: 0; }
+  .mascot-block p { font-size: 14px; color: #1A9EA0; line-height: 1.6; }
+
+  /* CHECKLIST */
+  .checklist { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .check-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; background: var(--gray-1); border-radius: 8px; font-size: 14px; color: #444; line-height: 1.5; }
+  .check-item span { color: var(--teal); font-weight: 700; font-size: 16px; flex-shrink: 0; }
+
+  /* QUIZ */
+  .quiz-block { background: var(--white); border: 1px solid #E8E8E8; border-radius: 16px; padding: 32px; margin-bottom: 24px; }
+  .quiz-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #E8E8E8; }
+  .quiz-icon { width: 44px; height: 44px; background: #FFF3E0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .quiz-header h2 { font-size: 20px; font-weight: 700; }
+  .quiz-header p { font-size: 13px; color: #777; margin-top: 2px; }
+  .question { margin-bottom: 28px; }
+  .question-text { font-size: 15px; font-weight: 600; margin-bottom: 12px; line-height: 1.5; }
+  .question-num { display: inline-block; background: var(--teal); color: var(--white); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 6px; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid #E8E8E8; border-radius: 8px; cursor: pointer; transition: border-color 0.15s, background 0.15s; font-size: 14px; }
+  .option:hover { border-color: var(--teal); background: var(--teal-light); }
+  .option input[type="radio"] { accent-color: var(--teal); width: 16px; height: 16px; flex-shrink: 0; }
+  .option.correct { border-color: #4CAF50; background: #E8F5E9; }
+  .option.wrong { border-color: #F44336; background: #FFEBEE; }
+  .option.show-correct { border-color: #4CAF50; background: #E8F5E9; }
+  .quiz-submit { width: 100%; margin-top: 28px; padding: 15px; background: var(--teal); color: var(--white); border: none; border-radius: 10px; font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; transition: background 0.2s; }
+  .quiz-submit:hover { background: var(--teal-dark); }
+  .quiz-submit:disabled { background: var(--gray-2); cursor: not-allowed; }
+  .quiz-result { display: none; margin-top: 20px; padding: 20px 24px; border-radius: 12px; text-align: center; }
+  .quiz-result.pass { background: #E8F5E9; border: 1px solid #4CAF50; }
+  .quiz-result.fail { background: #FFEBEE; border: 1px solid #F44336; }
+  .quiz-result .result-icon { font-size: 36px; margin-bottom: 8px; }
+  .quiz-result h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .quiz-result p { font-size: 14px; color: #555; }
+  .quiz-result .score { font-size: 28px; font-weight: 800; margin: 8px 0; }
+  .quiz-result.pass .score { color: #2E7D32; }
+  .quiz-result.fail .score { color: #C62828; }
+  .retry-btn { margin-top: 14px; padding: 10px 24px; background: transparent; border: 1px solid #F44336; border-radius: 8px; color: #F44336; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+
+  /* TASK BLOCK */
+  .task-block { background: var(--white); border: 1px solid #E8E8E8; border-radius: 16px; padding: 32px; margin-bottom: 24px; }
+  .task-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #E8E8E8; }
+  .task-icon { width: 44px; height: 44px; background: var(--teal-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .task-header h2 { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
+  .task-header p { font-size: 13px; color: #777; }
+  .task-step { margin-bottom: 28px; }
+  .task-step:last-child { margin-bottom: 0; }
+  .task-step-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); margin-bottom: 8px; }
+  .task-step h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .task-step p { font-size: 14px; color: #555; line-height: 1.6; }
+  .download-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--teal); color: var(--white); padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; margin-top: 12px; transition: background 0.2s; }
+  .download-btn:hover { background: var(--teal-dark); }
+  .example-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+  .example-table th { background: var(--gray-1); padding: 10px 12px; text-align: left; font-weight: 600; font-size: 12px; color: #555; border-bottom: 2px solid #E8E8E8; }
+  .example-table td { padding: 10px 12px; border-bottom: 1px solid #F0F0F0; color: #333; vertical-align: top; }
+  .example-table tr:last-child td { border-bottom: none; }
+  .td-fill { background: #FFFDE7; color: #999; font-style: italic; }
+  .upload-form .form-row { margin-bottom: 14px; }
+  .upload-form label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--black); }
+  .upload-form input[type="text"] { width: 100%; padding: 11px 14px; border: 1px solid #E8E8E8; border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
+  .upload-form input[type="text"]:focus { border-color: var(--teal); }
+  .upload-form input[type="file"] { width: 100%; padding: 10px 14px; border: 2px dashed #E8E8E8; border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif; cursor: pointer; background: var(--gray-1); transition: border-color 0.2s; }
+  .upload-form input[type="file"]:hover { border-color: var(--teal); }
+  .upload-hint { font-size: 12px; color: var(--gray-2); margin-top: 4px; }
+  .upload-btn { width: 100%; padding: 14px; background: var(--teal); color: var(--white); border: none; border-radius: 10px; font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
+  .upload-btn:hover { background: var(--teal-dark); }
+
+  /* NAV */
+  .nav-buttons { display: flex; justify-content: space-between; gap: 12px; margin-top: 32px; }
+  .btn-secondary { padding: 14px 28px; border: 1px solid #E8E8E8; border-radius: 10px; background: var(--white); font-size: 15px; font-weight: 500; color: #666; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-primary { padding: 14px 32px; background: var(--teal); border: none; border-radius: 10px; font-size: 15px; font-weight: 600; color: var(--white); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: background 0.2s; }
+  .btn-primary:hover { background: var(--teal-dark); }
+
+  /* MODULE NAV */
+  .module-nav { background: var(--white); border-bottom: 1px solid #E8E8E8; padding: 0 24px; display: flex; align-items: center; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .mnav-item { padding: 12px 16px; font-size: 13px; font-weight: 600; color: #888; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.15s; flex-shrink: 0; }
+  .mnav-item:hover { color: var(--teal); }
+  .mnav-item.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+  @media (max-width: 600px) {
+    .module-title { font-size: 24px; }
+    .nav-buttons { flex-direction: column; }
+    .btn-secondary, .btn-primary { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <img src="logo.png" alt="MegaCityShop">
+    <div class="logo-sub">Школа менеджера</div>
+  </div>
+  <a href="index.html" class="back-btn">← На главную</a>
+</div>
+<div class="module-nav">
+  <a href="module-0.html" class="mnav-item">Модуль 0</a>
+  <a href="module-1.html" class="mnav-item">Модуль 1</a>
+  <a href="module-2.html" class="mnav-item">Модуль 2</a>
+  <a href="module-3.html" class="mnav-item">Модуль 3</a>
+  <a href="module-4.html" class="mnav-item active">Модуль 4</a>
+  <a href="final-test.html" class="mnav-item">Тест</a>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-bar">
+    <span class="progress-label">Прогресс курса</span>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <span class="progress-pct">80%</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="module-badge">Модуль 4</div>
+  <h1 class="module-title">Инструменты менеджера</h1>
+  <p class="module-sub">Три видео — смотри внимательно, эти инструменты ты будешь использовать каждый день.</p>
+
+  <!-- MASCOT -->
+  <div class="mascot-block">
+    <img src="semenovna.png" alt="Семёновна">
+    <p><strong>Сова Семёновна:</strong> Последний модуль перед финальным тестом. Смотри все три видео и выполни практическое задание — без этого на тест идти не стоит.</p>
+  </div>
+
+  <!-- VIDEO 1 -->
+  <div class="video-block">
+    <div class="video-header">
+      <div class="video-num">1</div>
+      <div class="video-meta">
+        <div class="video-label">Урок 4.1</div>
+        <div class="video-title">Воронка продаж в Битрикс24</div>
+      </div>
+    </div>
+    <div class="video-container">
+      <iframe src="https://vkvideo.ru/video_ext.php?oid=-204762579&id=456239075&hash=179c3b280d19103b&hd=3" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="video-tips">
+      <div class="video-tips-title">На что обратить внимание</div>
+      <div class="tips-list">
+        <div class="tip">Как выглядят этапы воронки и что означает каждый</div>
+        <div class="tip">Где заполнять данные клиента и реквизиты</div>
+        <div class="tip">Как ставить задачи и напоминания на касания</div>
+        <div class="tip">Как переводить сделку между этапами</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIDEO 2 -->
+  <div class="video-block">
+    <div class="video-header">
+      <div class="video-num">2</div>
+      <div class="video-meta">
+        <div class="video-label">Урок 4.2</div>
+        <div class="video-title">Файл расчёта рентабельности</div>
+      </div>
+    </div>
+    <div class="video-container">
+      <iframe src="https://vkvideo.ru/video_ext.php?oid=-204762579&id=456239076&hash=a530b5d355294fec&hd=3" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="video-tips">
+      <div class="video-tips-title">На что обратить внимание</div>
+      <div class="tips-list">
+        <div class="tip">Где взять шаблон файла и как его открыть</div>
+        <div class="tip">Какие данные вносятся вручную, какие считаются автоматически</div>
+        <div class="tip">Как читать итоговый результат — выгодна сделка или нет</div>
+        <div class="tip">Когда отправлять файл на согласование руководителю</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIDEO 3 -->
+  <div class="video-block">
+    <div class="video-header">
+      <div class="video-num">3</div>
+      <div class="video-meta">
+        <div class="video-label">Урок 4.3</div>
+        <div class="video-title">Создание КП в Битрикс24</div>
+      </div>
+    </div>
+    <div class="video-container">
+      <iframe src="https://vkvideo.ru/video_ext.php?oid=-204762579&id=456239078&hash=88b1a7e73feef5f2&hd=3" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="video-tips">
+      <div class="video-tips-title">На что обратить внимание</div>
+      <div class="tips-list">
+        <div class="tip">Где находится шаблон КП в Битрикс24</div>
+        <div class="tip">Как добавлять позиции товаров и цены</div>
+        <div class="tip">Как отправить КП клиенту прямо из CRM</div>
+        <div class="tip">Как отследить что клиент открыл КП</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="content-block">
+    <h2>Ключевые правила работы с инструментами</h2>
+    <div class="checklist">
+      <div class="check-item"><span>✓</span>Все клиенты и сделки — только в Битрикс24. Никаких записей в блокноте или таблицах на стороне.</div>
+      <div class="check-item"><span>✓</span>Каждое касание с клиентом фиксируется в CRM — звонок, письмо, сообщение.</div>
+      <div class="check-item"><span>✓</span>Перед отправкой КП — всегда заполняй расчёт рентабельности. Убыточные сделки не отправляем.</div>
+      <div class="check-item"><span>✓</span>КП создаётся только через Битрикс24 по шаблону — не в Word и не вручную.</div>
+      <div class="check-item"><span>✓</span>После отправки КП — сразу ставь напоминание на следующее касание.</div>
+    </div>
+  </div>
+
+  <!-- ПРАКТИЧЕСКОЕ ЗАДАНИЕ -->
+  <div class="task-block">
+    <div class="task-header">
+      <div class="task-icon">📊</div>
+      <div>
+        <h2>Практическое задание</h2>
+        <p>Заполни файл расчёта рентабельности и загрузи его ниже — Дмитрий проверит на созвоне</p>
+      </div>
+    </div>
+
+    <div class="task-step">
+      <div class="task-step-label">Шаг 1</div>
+      <h3>Скачай шаблон файла расчёта</h3>
+      <p>Это тот самый файл, который ты будешь использовать при каждой сделке. Открой его в Excel или Google Таблицах.</p>
+      <a href="ФР Шаблон.xlsx" download class="download-btn">⬇ Скачать шаблон ФР</a>
+    </div>
+
+    <div class="task-step">
+      <div class="task-step-label">Шаг 2</div>
+      <h3>Внеси все данные в файл</h3>
+      <p>Ниже — полные данные по сделке. Найди нужные ячейки в файле и внеси каждое значение точно так, как оно указано.</p>
+
+      <!-- SCENARIO CARD -->
+      <div style="margin-top:16px; padding:16px 20px; background:var(--teal-light); border-radius:10px; font-size:14px; color:#1A9EA0; line-height:1.8;">
+        <strong>Сценарий:</strong> Клиент из Санкт-Петербурга сделал заказ через сайт. Оплата — РСЧ (ИП Козловский А.В.), предоплата 100%. Доставка до адреса заказчика. Вид сделки — онлайн с сайта. Менеджер — СТ (Стажировка).
+      </div>
+
+      <!-- ЗАКУП TABLE -->
+      <div style="margin-top:20px;">
+        <div style="font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--teal); margin-bottom:8px;">Раздел «Закуп»</div>
+        <div style="overflow-x:auto;">
+          <table class="example-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Наименование</th>
+                <th>Кол-во</th>
+                <th>Цена за ед.</th>
+                <th>Поставщик / Город</th>
+                <th>Стоимость доставки</th>
+                <th>Вес (кг)</th>
+                <th>Объём (м³)</th>
+                <th>Ставка НДС</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>TR-004g Стол Трапеция "Точка Роста" (ЛДСП светло-серый/Кромка красный)</td>
+                <td>31</td>
+                <td style="white-space:nowrap;">2 920 ₽</td>
+                <td>Томск</td>
+                <td style="white-space:nowrap;">24 324 ₽</td>
+                <td>403</td>
+                <td>0,93</td>
+                <td>5%</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>РКМ-101 Стол рабочий офисный (1500×700×750 мм)</td>
+                <td>1</td>
+                <td style="white-space:nowrap;">4 460 ₽</td>
+                <td>Челябинск</td>
+                <td style="white-space:nowrap;">4 229 ₽</td>
+                <td>32</td>
+                <td>0,05</td>
+                <td>5%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ПРОДАЖА TABLE -->
+      <div style="margin-top:20px;">
+        <div style="font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--teal); margin-bottom:8px;">Раздел «Продажа»</div>
+        <div style="overflow-x:auto;">
+          <table class="example-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Наименование</th>
+                <th>Кол-во</th>
+                <th>Цена за ед.</th>
+                <th>Ставка НДС</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>TR-004g Стол Трапеция "Точка Роста" (ЛДСП светло-серый/Кромка красный)</td>
+                <td>31</td>
+                <td style="white-space:nowrap;">4 672 ₽</td>
+                <td>5%</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>РКМ-101 Стол рабочий офисный (1500×700×750 мм)</td>
+                <td>1</td>
+                <td style="white-space:nowrap;">7 224 ₽</td>
+                <td>5%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SERVICES -->
+      <div style="margin-top:20px;">
+        <div style="font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--teal); margin-bottom:8px;">Дополнительно</div>
+        <div style="overflow-x:auto;">
+          <table class="example-table">
+            <thead>
+              <tr><th>Поле</th><th>Значение</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Сборка</td><td>15 000 ₽</td></tr>
+              <tr><td>Планирую потратить на сборку</td><td>10 000 ₽</td></tr>
+              <tr><td>Город клиента</td><td>Санкт-Петербург</td></tr>
+              <tr><td>Способ оплаты</td><td>РСЧ (ИП Козловский А.В.)</td></tr>
+              <tr><td>Условия оплаты</td><td>Предоплата 100%</td></tr>
+              <tr><td>Условия доставки</td><td>Доставка до адреса заказчика</td></tr>
+              <tr><td>Вид сделки</td><td>Онлайн с сайта</td></tr>
+              <tr><td>Менеджер</td><td>СТ (Стажировка)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="margin-top:12px; padding:12px 16px; background:#E8F5E9; border:1px solid #A5D6A7; border-radius:8px; font-size:13px; color:#2E7D32; line-height:1.6;">
+        🟢 <strong>Заполняй только зелёные ячейки</strong> — они предназначены для ввода данных. Белые ячейки считаются автоматически, трогать их не нужно. Колонка <strong>«Сумма НДС»</strong> подставится автоматически после того как укажешь ставку НДС и цену.
+      </div>
+      <div style="margin-top:10px; padding:12px 16px; background:#FFF8E1; border:1px solid #FFD54F; border-radius:8px; font-size:13px; color:#795548; line-height:1.6;">
+        📊 <strong>Целевая рентабельность — не ниже 20%.</strong> Если файл показывает <em>«Сделка не рентабельна. Запускать запрещено!»</em> — значит что-то введено неверно. Проверь цены продажи и стоимость доставки и попробуй снова.
+      </div>
+    </div>
+
+    <div class="task-step">
+      <div class="task-step-label">Шаг 3</div>
+      <h3>Сохрани файл и переходи к финальному тесту</h3>
+      <p>Сохрани заполненный файл на компьютере — он понадобится в финальном тесте. Там же ты загрузишь его вместе с контактами и ответами на три вопроса.</p>
+      <div style="margin-top:12px; padding:12px 16px; background:var(--teal-light); border-radius:8px; font-size:13px; color:#1A9EA0; line-height:1.6;">
+        📁 Загрузка файла — в финальном тесте, в блоке анкеты после прохождения.
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-block">
+    <div class="quiz-header">
+      <div class="quiz-icon">📝</div>
+      <div>
+        <h2>Мини-тест — Модуль 4</h2>
+        <p>5 вопросов · Нужно ответить правильно на 4 из 5</p>
+      </div>
+    </div>
+
+    <div class="question" data-correct="c">
+      <div class="question-text"><span class="question-num">1</span>Где ведётся вся работа с клиентами и сделками?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q1" value="a"> В Excel-таблице на компьютере</label>
+        <label class="option"><input type="radio" name="q1" value="b"> В Google Таблицах</label>
+        <label class="option"><input type="radio" name="q1" value="c"> В Битрикс24</label>
+        <label class="option"><input type="radio" name="q1" value="d"> В личном блокноте менеджера</label>
+      </div>
+    </div>
+
+    <div class="question" data-correct="b">
+      <div class="question-text"><span class="question-num">2</span>Что нужно сделать перед отправкой КП клиенту?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q2" value="a"> Согласовать с клиентом список позиций</label>
+        <label class="option"><input type="radio" name="q2" value="b"> Заполнить расчёт рентабельности по шаблону</label>
+        <label class="option"><input type="radio" name="q2" value="c"> Получить предоплату</label>
+        <label class="option"><input type="radio" name="q2" value="d"> Подписать договор</label>
+      </div>
+    </div>
+
+    <div class="question" data-correct="a">
+      <div class="question-text"><span class="question-num">3</span>Где создаётся коммерческое предложение?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q3" value="a"> В Битрикс24 по шаблону</label>
+        <label class="option"><input type="radio" name="q3" value="b"> В Word вручную</label>
+        <label class="option"><input type="radio" name="q3" value="c"> В Google Docs</label>
+        <label class="option"><input type="radio" name="q3" value="d"> В любом удобном формате</label>
+      </div>
+    </div>
+
+    <div class="question" data-correct="d">
+      <div class="question-text"><span class="question-num">4</span>Что нужно сделать сразу после отправки КП клиенту?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q4" value="a"> Позвонить клиенту и уточнить получил ли он письмо</label>
+        <label class="option"><input type="radio" name="q4" value="b"> Ждать ответа от клиента</label>
+        <label class="option"><input type="radio" name="q4" value="c"> Отправить КП повторно для надёжности</label>
+        <label class="option"><input type="radio" name="q4" value="d"> Поставить напоминание на следующее касание в CRM</label>
+      </div>
+    </div>
+
+    <div class="question" data-correct="b">
+      <div class="question-text"><span class="question-num">5</span>Что фиксируется в CRM при работе с клиентом?</div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q5" value="a"> Только финальный результат сделки</label>
+        <label class="option"><input type="radio" name="q5" value="b"> Каждое касание — звонок, письмо, сообщение</label>
+        <label class="option"><input type="radio" name="q5" value="c"> Только входящие звонки</label>
+        <label class="option"><input type="radio" name="q5" value="d"> Только оплаты и документы</label>
+      </div>
+    </div>
+
+    <button class="quiz-submit" onclick="checkQuiz()">Проверить ответы</button>
+
+    <div class="quiz-result pass" id="quiz-pass">
+      <div class="result-icon">🎉</div>
+      <h3>Отлично! Все модули пройдены!</h3>
+      <div class="score" id="score-pass"></div>
+      <p>Переходи к финальному тесту — он откроет путь к созвону с Дмитрием.</p>
+    </div>
+    <div class="quiz-result fail" id="quiz-fail">
+      <div class="result-icon">📖</div>
+      <h3>Нужно повторить</h3>
+      <div class="score" id="score-fail"></div>
+      <p>Пересмотри видео и перечитай материал — затем попробуй снова.</p>
+      <button class="retry-btn" onclick="retryQuiz()">Попробовать ещё раз</button>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav-buttons" id="nav-buttons" style="display:none;">
+    <a href="module-3.html" class="btn-secondary">← Модуль 3</a>
+    <a href="final-test.html" class="btn-primary">Финальный тест →</a>
+  </div>
+
+</div>
+
+<div style="text-align:center; padding:24px; font-size:12px; color:#B0B0B0; border-top:1px solid #E8E8E8; background:var(--white);">
+  MegaCityShop · Школа менеджера · megacityshop.ru
+</div>
+
+<script>
+function checkQuiz() {
+  const questions = document.querySelectorAll('.question');
+  let correct = 0;
+  questions.forEach(q => {
+    const correctAnswer = q.dataset.correct;
+    const selected = q.querySelector('input[type="radio"]:checked');
+    const options = q.querySelectorAll('.option');
+    options.forEach(opt => opt.classList.remove('correct', 'wrong', 'show-correct'));
+    if (selected) {
+      const selectedOption = selected.closest('.option');
+      if (selected.value === correctAnswer) {
+        correct++;
+        selectedOption.classList.add('correct');
+      } else {
+        selectedOption.classList.add('wrong');
+        options.forEach(opt => { if (opt.querySelector('input').value === correctAnswer) opt.classList.add('show-correct'); });
+      }
+    } else {
+      options.forEach(opt => { if (opt.querySelector('input').value === correctAnswer) opt.classList.add('show-correct'); });
+    }
+    q.querySelectorAll('input').forEach(inp => inp.disabled = true);
+  });
+  document.querySelector('.quiz-submit').disabled = true;
+  const total = questions.length;
+  if (correct >= total - 1) {
+    document.getElementById('quiz-pass').style.display = 'block';
+    document.getElementById('score-pass').textContent = correct + ' из ' + total;
+    document.getElementById('nav-buttons').style.display = 'flex';
+  } else {
+    document.getElementById('quiz-fail').style.display = 'block';
+    document.getElementById('score-fail').textContent = correct + ' из ' + total;
+  }
+}
+
+function retryQuiz() {
+  document.querySelectorAll('.question').forEach(q => {
+    q.querySelectorAll('input').forEach(inp => { inp.disabled = false; inp.checked = false; });
+    q.querySelectorAll('.option').forEach(opt => opt.classList.remove('correct', 'wrong', 'show-correct'));
+  });
+  document.querySelector('.quiz-submit').disabled = false;
+  document.getElementById('quiz-pass').style.display = 'none';
+  document.getElementById('quiz-fail').style.display = 'none';
+  window.scrollTo({ top: document.querySelector('.quiz-block').offsetTop - 80, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

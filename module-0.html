@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Модуль 0 — Как проходит обучение · MegaCityShop</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #2ABFC0;
+    --teal-dark: #1A9EA0;
+    --teal-light: #E0F7F7;
+    --black: #0D0D0D;
+    --gray-1: #F4F4F4;
+    --gray-2: #B0B0B0;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: var(--gray-1);
+    color: var(--black);
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--white);
+    border-bottom: 1px solid #E8E8E8;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo img { height: 40px; }
+  .logo-sub { font-size: 11px; color: var(--gray-2); }
+  .back-btn {
+    font-size: 14px;
+    color: var(--teal);
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .back-btn:hover { color: var(--teal-dark); }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    background: var(--white);
+    border-bottom: 1px solid #E8E8E8;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .progress-label { font-size: 12px; color: var(--gray-2); white-space: nowrap; }
+  .progress-track { flex: 1; height: 6px; background: #E8E8E8; border-radius: 3px; }
+  .progress-fill { height: 100%; width: 0%; background: var(--teal); border-radius: 3px; }
+  .progress-pct { font-size: 12px; font-weight: 600; color: var(--teal); white-space: nowrap; }
+
+  /* WRAP */
+  .wrap { max-width: 800px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  /* MODULE BADGE */
+  .module-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--teal);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .module-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .module-sub {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  /* TIMER BLOCK */
+  .timer-block {
+    background: #FFF8E1;
+    border: 1px solid #FFD54F;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .timer-icon { font-size: 32px; flex-shrink: 0; }
+  .timer-text h4 { font-size: 15px; font-weight: 700; color: #E65100; margin-bottom: 4px; }
+  .timer-text p { font-size: 13px; color: #795548; line-height: 1.5; }
+
+  /* STEPS */
+  .steps-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 16px;
+  }
+  .steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 32px; }
+  .step {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 20px 0;
+    border-bottom: 1px solid #E8E8E8;
+    position: relative;
+  }
+  .step:last-child { border-bottom: none; }
+  .step-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .step-num {
+    width: 40px;
+    height: 40px;
+    background: var(--teal);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+    flex-shrink: 0;
+  }
+  .step-line {
+    width: 2px;
+    flex: 1;
+    min-height: 24px;
+    background: #E8E8E8;
+    margin-top: 6px;
+  }
+  .step:last-child .step-line { display: none; }
+  .step-body { padding-top: 8px; }
+  .step-name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .step-desc { font-size: 14px; color: #666; line-height: 1.6; }
+
+  /* WHY BLOCK */
+  .why-block {
+    background: var(--black);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+  .why-block h3 {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 12px;
+  }
+  .why-block p {
+    font-size: 16px;
+    color: var(--white);
+    line-height: 1.7;
+  }
+  .why-block p span { color: var(--teal); font-weight: 600; }
+
+  /* FORM */
+  .form-block {
+    background: var(--white);
+    border: 1px solid #E8E8E8;
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+  .form-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .form-sub {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--black);
+  }
+  .form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #E8E8E8;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: var(--black);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: var(--teal); }
+  .form-input::placeholder { color: #B0B0B0; }
+  .form-hint { font-size: 12px; color: var(--gray-2); margin-top: 4px; }
+
+  .start-btn {
+    width: 100%;
+    background: var(--teal);
+    color: var(--white);
+    font-size: 16px;
+    font-weight: 600;
+    padding: 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.2s;
+    margin-top: 8px;
+  }
+  .start-btn:hover { background: var(--teal-dark); }
+
+  /* MASCOT */
+  .mascot-block {
+    background: var(--teal-light);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .mascot-block img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .mascot-block p { font-size: 14px; color: #1A9EA0; line-height: 1.6; }
+  .mascot-block p strong { color: var(--teal-dark); }
+
+  /* MODULE NAV */
+  .module-nav { background: var(--white); border-bottom: 1px solid #E8E8E8; padding: 0 24px; display: flex; align-items: center; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .mnav-item { padding: 12px 16px; font-size: 13px; font-weight: 600; color: #888; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.15s; flex-shrink: 0; }
+  .mnav-item:hover { color: var(--teal); }
+  .mnav-item.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+  @media (max-width: 600px) {
+    .module-title { font-size: 24px; }
+    .why-block { padding: 24px; }
+    .form-block { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <img src="logo.png" alt="MegaCityShop">
+    <div class="logo-sub">Школа менеджера</div>
+  </div>
+  <a href="index.html" class="back-btn">← Главная</a>
+</div>
+<div class="module-nav">
+  <a href="module-0.html" class="mnav-item active">Модуль 0</a>
+  <a href="module-1.html" class="mnav-item">Модуль 1</a>
+  <a href="module-2.html" class="mnav-item">Модуль 2</a>
+  <a href="module-3.html" class="mnav-item">Модуль 3</a>
+  <a href="module-4.html" class="mnav-item">Модуль 4</a>
+  <a href="final-test.html" class="mnav-item">Тест</a>
+</div>
+
+<!-- PROGRESS -->
+<div style="background: var(--white); border-bottom: 1px solid #E8E8E8;">
+  <div class="progress-bar">
+    <span class="progress-label">Прогресс курса</span>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <span class="progress-pct">0%</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- BADGE + TITLE -->
+  <div class="module-badge">Модуль 0</div>
+  <h1 class="module-title">Как проходит обучение<br>и зачем оно нужно</h1>
+  <p class="module-sub">Прочитай внимательно — здесь всё что нужно знать перед стартом.</p>
+
+  <!-- MASCOT -->
+  <div class="mascot-block">
+    <img src="semenovna.png" alt="Семёновна">
+    <p><strong>Сова Семёновна:</strong> Привет! Я рада что ты здесь. Этот модуль займёт 5 минут — просто прочитай и нажми кнопку. После этого откроется первый урок.</p>
+  </div>
+
+  <!-- TIMER -->
+  <div class="timer-block">
+    <div class="timer-icon">⏱️</div>
+    <div class="timer-text">
+      <h4>У тебя 72 часа с момента старта</h4>
+      <p>После нажатия кнопки «Начать обучение» у тебя есть 72 часа чтобы пройти все модули и сдать финальный тест. Планируй своё время заранее.</p>
+    </div>
+  </div>
+
+  <!-- WHY -->
+  <div class="why-block">
+    <h3>Зачем это обучение</h3>
+    <p>Мы не хотим тратить время друг друга. Созвон с руководителем — это финальный шаг, не первый. <span>Сначала ты узнаёшь о компании, продукте и инструментах</span> — и только потом мы встречаемся. Так разговор сразу идёт по делу.</p>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps-title">Как всё устроено</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-name">Смотри видеоуроки в своём темпе</div>
+        <div class="step-desc">4 модуля — видео и текст. Каждый урок открывается последовательно. Можно делать паузы и возвращаться.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">2</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-name">Сдай финальный тест</div>
+        <div class="step-desc">20 вопросов по всем модулям. Проходной балл — 80%. Тест можно пройти один раз.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">3</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-name">Заполни анкету</div>
+        <div class="step-desc">После теста укажи контакты, загрузи файл расчёта из Модуля 4 и ответь на три коротких вопроса.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">4</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-name">Ждёшь звонка от Дмитрия</div>
+        <div class="step-desc">После получения анкеты Дмитрий свяжется с тобой по телефону или Telegram. Обычно в течение 1–2 рабочих дней.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center; padding: 32px 0 16px;">
+    <button class="start-btn" onclick="window.location.href='module-1.html'">Начать обучение →</button>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div style="text-align:center; padding: 24px; font-size: 12px; color: #B0B0B0; border-top: 1px solid #E8E8E8; background: var(--white);">
+  MegaCityShop · Школа менеджера · megacityshop.ru
+</div>
+
+</body>
+</html>
