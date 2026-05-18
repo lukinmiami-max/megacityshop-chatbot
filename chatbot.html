@@ -70,6 +70,18 @@ body { font-family: 'Inter', sans-serif; background: #f0f0f0; min-height: 100vh;
 }
 .close-btn:hover { background: rgba(255,255,255,0.35); }
 
+.privacy-notice {
+  padding: 8px 16px;
+  background: #f9f9f9;
+  border-bottom: 1px solid #efefef;
+  font-size: 11px;
+  color: #999;
+  text-align: center;
+  line-height: 1.5;
+}
+.privacy-notice a { color: #999; text-decoration: underline; }
+.privacy-notice a:hover { color: #666; }
+
 .popup-messages {
   padding: 16px; display: flex; flex-direction: column; gap: 12px;
   max-height: 320px; overflow-y: auto;
@@ -199,6 +211,10 @@ body { font-family: 'Inter', sans-serif; background: #f0f0f0; min-height: 100vh;
         <div class="popup-sub"><span class="status-dot"></span> Онлайн · консультант</div>
       </div>
       <button class="close-btn" onclick="toggleChat()">✕</button>
+    </div>
+
+    <div class="privacy-notice">
+      При отправке данных вы соглашаетесь с <a href="https://megacityshop.ru/page/Konfidencialnost" target="_blank" rel="noopener">политикой обработки персональных данных</a>
     </div>
 
     <div class="popup-messages" id="popupMessages">
