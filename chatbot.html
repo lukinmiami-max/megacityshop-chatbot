@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Семёновна — MegaCityShop</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Яндекс Метрика -->
+<script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");ym(69334015,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true});</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/69334015" style="position:absolute; left:-9999px;" alt=""/></div></noscript>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Inter', sans-serif; background: #f0f0f0; min-height: 100vh; }
@@ -131,6 +134,12 @@ body { font-family: 'Inter', sans-serif; background: #f0f0f0; min-height: 100vh;
   border-radius: 10px; padding: 12px; text-align: center;
   font-size: 13px; color: #2e7d32; display: none;
 }
+.consent-label {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 12px; color: #666; cursor: pointer; line-height: 1.4;
+}
+.consent-label input { margin-top: 2px; accent-color: #2ABFC0; flex-shrink: 0; }
+.consent-label a { color: #2ABFC0; text-decoration: underline; }
 
 /* API row */
 .api-row {
@@ -213,6 +222,10 @@ body { font-family: 'Inter', sans-serif; background: #f0f0f0; min-height: 100vh;
       <input class="form-input" id="formName" type="text" placeholder="Ваше имя">
       <input class="form-input" id="formPhone" type="tel" placeholder="Номер телефона">
       <input class="form-input" id="formEmail" type="email" placeholder="Электронная почта">
+      <label class="consent-label">
+        <input type="checkbox" id="formConsent">
+        <span>Я согласен на <a href="https://megacityshop.ru/page/Konfidencialnost" target="_blank">обработку персональных данных</a></span>
+      </label>
       <button class="form-submit" onclick="submitForm()">Отправить заявку →</button>
       <div class="form-success" id="formSuccess">✓ Заявка принята! Менеджер свяжется с вами в течение дня.</div>
     </div>
@@ -403,11 +416,19 @@ function submitForm() {
   const name = document.getElementById('formName').value.trim();
   const phone = document.getElementById('formPhone').value.trim();
   const email = document.getElementById('formEmail').value.trim();
+  const consent = document.getElementById('formConsent').checked;
 
   if (!name || !phone) {
     alert('Пожалуйста, укажите имя и номер телефона');
     return;
   }
+  if (!consent) {
+    alert('Необходимо согласие на обработку персональных данных');
+    return;
+  }
+
+  // Яндекс Метрика — цель solo_get_contact
+  if (typeof ym !== 'undefined') ym(69334015, 'reachGoal', 'solo_get_contact');
 
   // Показываем успех
   document.getElementById('formSuccess').style.display = 'block';
