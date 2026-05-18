@@ -494,6 +494,9 @@ async function sendMessage() {
   const apiKey = document.getElementById('apiKey').value.trim();
   if (!apiKey) { alert('Введите API ключ'); return; }
 
+  // Сохраняем ключ в localStorage
+  localStorage.setItem('mchat_api_key', apiKey);
+
   input.value = '';
   document.getElementById('sendBtn').disabled = true;
   appendMsg('user', text);
@@ -519,30 +522,35 @@ async function sendMessage() {
     const data = await res.json();
     document.getElementById('typing')?.remove();
 
-    let reply = data.content?.[0]?.text || 'Произошла ошибка. Попробуйте ещё раз.';
+    const rawReply = data.content?.[0]?.text || 'Произошла ошибка. Попробуйте ещё раз.';
 
-    // Проверяем флаг $ST200 — показываем форму контактов
-    const needsForm = reply.includes('$ST200');
-    reply = reply.replace('$ST200', '').trim();
+    // Сохраняем в историю чистый текст (до HTML-форматирования)
+    const needsForm = rawReply.includes('$ST200');
+    const plainReply = rawReply.replace('$ST200', '').trim();
+    history.push({ role: 'assistant', content: plainReply });
 
-    // Форматируем жирный текст
-    reply = reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    // Markdown-ссылки [текст](url) → кликабельные
-    reply = reply.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-    // Голые URL → кликабельные
-    reply = reply.replace(/(?<!["\(])(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    // Форматируем для отображения
+    let displayReply = plainReply;
+    displayReply = displayReply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    displayReply = displayReply.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    displayReply = displayReply.replace(/(?<!["\(])(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
 
-    history.push({ role: 'assistant', content: reply });
-    appendMsg('bot', reply);
-
+    appendMsg('bot', displayReply);
     if (needsForm) showContactForm();
 
-  } catch {
+  } catch (err) {
     document.getElementById('typing')?.remove();
     appendMsg('bot', 'Не удалось подключиться. Проверьте API ключ.');
+    console.error(err);
   }
   document.getElementById('sendBtn').disabled = false;
 }
+
+// Восстанавливаем API ключ из localStorage при загрузке
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('mchat_api_key');
+  if (saved) document.getElementById('apiKey').value = saved;
+});
 </script>
 </body>
 </html>
