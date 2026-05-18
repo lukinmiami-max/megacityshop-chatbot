@@ -247,10 +247,6 @@ body { font-family: 'Inter', sans-serif; background: #f0f0f0; min-height: 100vh;
       <div class="form-back-link" onclick="hideForm()">У меня остались вопросы</div>
     </div>
 
-    <div class="api-row">
-      <label>API:</label>
-      <input id="apiKey" type="password" placeholder="sk-ant-api03-...">
-    </div>
 
     <div class="popup-input-row">
       <input class="popup-input" id="popupInput" type="text" placeholder="Напишите вопрос..."
@@ -491,11 +487,6 @@ async function sendMessage() {
   const input = document.getElementById('popupInput');
   const text = input.value.trim();
   if (!text) return;
-  const apiKey = document.getElementById('apiKey').value.trim();
-  if (!apiKey) { alert('Введите API ключ'); return; }
-
-  // Сохраняем ключ в localStorage
-  localStorage.setItem('mchat_api_key', apiKey);
 
   input.value = '';
   document.getElementById('sendBtn').disabled = true;
@@ -504,13 +495,10 @@ async function sendMessage() {
   showTyping();
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://megacityshop-proxy.lukinmiami.workers.dev', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
@@ -546,11 +534,6 @@ async function sendMessage() {
   document.getElementById('sendBtn').disabled = false;
 }
 
-// Восстанавливаем API ключ из localStorage при загрузке
-window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('mchat_api_key');
-  if (saved) document.getElementById('apiKey').value = saved;
-});
 </script>
 </body>
 </html>
