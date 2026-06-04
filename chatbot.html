@@ -479,29 +479,23 @@ async function sendToBitrix(name, phone, email, dialogText) {
 
   const comment = '--- Диалог ---\n' + dialogText;
 
-  const body = JSON.stringify({
-    fields: {
-      TITLE: 'Заявка с сайта — ' + name,
-      NAME: name,
-      PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }],
-      EMAIL: email ? [{ VALUE: email, VALUE_TYPE: 'WORK' }] : undefined,
-      COMMENTS: comment,
-      SOURCE_ID: 'WEB'
-    }
-  });
+  const params = new URLSearchParams();
+  params.append('fields[TITLE]', 'Заявка с сайта — ' + name);
+  params.append('fields[NAME]', name);
+  params.append('fields[PHONE][0][VALUE]', phone);
+  params.append('fields[PHONE][0][VALUE_TYPE]', 'WORK');
+  params.append('fields[COMMENTS]', comment);
+  params.append('fields[SOURCE_ID]', 'WEB');
+  if (email) params.append('fields[EMAIL][0][VALUE]', email);
 
   try {
-    const res = await fetch(WEBHOOK + 'crm.lead.add.json', {
+    await fetch(WEBHOOK + 'crm.lead.add.json', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString(),
+      mode: 'no-cors'
     });
-    const data = await res.json();
-    if (data.error) {
-      console.error('Bitrix24 error:', data.error, data.error_description);
-    } else {
-      console.log('Лид создан, ID:', data.result);
-    }
+    console.log('Bitrix24: запрос отправлен');
   } catch (e) {
     console.error('Bitrix24 fetch error:', e);
   }
