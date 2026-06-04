@@ -484,25 +484,48 @@ function buildDialogText() {
 async function sendToBitrix(name, phone, email, dialogText) {
   const WEBHOOK = 'https://megacityshop.bitrix24.ru/rest/16/0yao8clemk5npdn3/';
 
-  const comment = '--- Диалог ---\n' + dialogText;
-
-  const params = new URLSearchParams();
-  params.append('fields[TITLE]', 'Заявка с сайта — ' + name);
-  params.append('fields[NAME]', name);
-  params.append('fields[PHONE][0][VALUE]', phone);
-  params.append('fields[PHONE][0][VALUE_TYPE]', 'WORK');
-  params.append('fields[COMMENTS]', comment);
-  params.append('fields[SOURCE_ID]', 'WEB');
-  if (email) params.append('fields[EMAIL][0][VALUE]', email);
+  // Шаг 1: создаём лид
+  const leadBody = JSON.stringify({
+    fields: {
+      TITLE: 'Заявка с сайта — ' + name,
+      NAME: name,
+      PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }],
+      EMAIL: email ? [{ VALUE: email, VALUE_TYPE: 'WORK' }] : undefined,
+      SOURCE_ID: 'WEB'
+    }
+  });
 
   try {
-    await fetch(WEBHOOK + 'crm.lead.add.json', {
+    const res = await fetch(WEBHOOK + 'crm.lead.add.json', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params.toString(),
-      mode: 'no-cors'
+      headers: { 'Content-Type': 'application/json' },
+      body: leadBody
     });
-    console.log('Bitrix24: запрос отправлен');
+    const data = await res.json();
+    const leadId = data.result;
+    console.log('Лид создан, ID:', leadId);
+
+    if (!leadId) {
+      console.error('Bitrix24 ошибка:', data.error, data.error_description);
+      return;
+    }
+
+    // Шаг 2: добавляем диалог как комментарий в таймлайн
+    const commentBody = JSON.stringify({
+      fields: {
+        ENTITY_ID: leadId,
+        ENTITY_TYPE: 'lead',
+        COMMENT: '--- Диалог с Семёновной ---\n' + dialogText
+      }
+    });
+
+    await fetch(WEBHOOK + 'crm.timeline.comment.add.json', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: commentBody
+    });
+    console.log('Диалог добавлен в таймлайн');
+
   } catch (e) {
     console.error('Bitrix24 fetch error:', e);
   }
