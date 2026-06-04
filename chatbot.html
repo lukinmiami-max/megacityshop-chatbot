@@ -456,6 +456,57 @@ function hideForm() {
   document.getElementById('popupInput').focus();
 }
 
+function buildDialogText() {
+  const lines = [];
+  const rows = document.querySelectorAll('#popupMessages .msg-row');
+  rows.forEach(row => {
+    const bubble = row.querySelector('.msg-bubble');
+    if (!bubble) return;
+    const text = bubble.innerText.trim();
+    if (!text) return;
+    if (row.classList.contains('user')) {
+      lines.push('👤 Пользователь: ' + text);
+    } else {
+      lines.push('🦉 Бот: ' + text);
+    }
+  });
+  return lines.join('\n');
+}
+
+async function sendToBitrix(name, phone, email, dialogText) {
+  const WEBHOOK = 'https://megacityshop.bitrix24.ru/rest/16/no1xmxc8iwh2iwn6/';
+
+  const comment = [
+    phone ? 'Телефон: ' + phone : '',
+    email ? 'Email: ' + email : '',
+    '',
+    '--- Диалог ---',
+    dialogText
+  ].filter(Boolean).join('\n');
+
+  const params = new URLSearchParams({
+    'fields[TITLE]': 'Заявка с сайта — ' + name,
+    'fields[NAME]': name,
+    'fields[PHONE][0][VALUE]': phone,
+    'fields[PHONE][0][VALUE_TYPE]': 'WORK',
+    'fields[COMMENTS]': comment,
+    'fields[STAGE_ID]': 'C1:NEW',
+    'fields[SOURCE_ID]': 'WEB'
+  });
+
+  if (email) params.append('fields[EMAIL][0][VALUE]', email);
+
+  try {
+    await fetch(WEBHOOK + 'crm.deal.add.json', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString()
+    });
+  } catch (e) {
+    console.error('Bitrix24 error:', e);
+  }
+}
+
 function submitForm() {
   const name = document.getElementById('formName').value.trim();
   const phone = document.getElementById('formPhone').value.trim();
@@ -466,7 +517,7 @@ function submitForm() {
     return;
   }
 
-  // Яндекс Метрика — цель solo_get_contact
+  // Яндекс Метрика — цель
   if (typeof ym !== 'undefined') ym(69334015, 'reachGoal', 'solo_get_contact');
 
   // Показываем успех
@@ -476,6 +527,10 @@ function submitForm() {
   // Добавляем в историю чата
   appendMsg('user', `Оставил заявку: ${name}, ${phone}${email ? ', ' + email : ''}`);
   history.push({ role: 'user', content: `Клиент оставил контакты: Имя: ${name}, Телефон: ${phone}, Email: ${email}` });
+
+  // Отправляем в Bitrix24
+  const dialogText = buildDialogText();
+  sendToBitrix(name, phone, email, dialogText);
 
   // Финальный ответ бота
   setTimeout(() => {
