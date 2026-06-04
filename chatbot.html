@@ -477,33 +477,36 @@ async function sendToBitrix(name, phone, email, dialogText) {
   const WEBHOOK = 'https://megacityshop.bitrix24.ru/rest/16/no1xmxc8iwh2iwn6/';
 
   const comment = [
-    phone ? 'Телефон: ' + phone : '',
-    email ? 'Email: ' + email : '',
-    '',
     '--- Диалог ---',
     dialogText
-  ].filter(Boolean).join('\n');
+  ].join('\n');
 
-  const params = new URLSearchParams({
-    'fields[TITLE]': 'Заявка с сайта — ' + name,
-    'fields[NAME]': name,
-    'fields[PHONE][0][VALUE]': phone,
-    'fields[PHONE][0][VALUE_TYPE]': 'WORK',
-    'fields[COMMENTS]': comment,
-    'fields[STAGE_ID]': 'C1:NEW',
-    'fields[SOURCE_ID]': 'WEB'
+  const body = JSON.stringify({
+    fields: {
+      TITLE: 'Заявка с сайта — ' + name,
+      NAME: name,
+      PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }],
+      EMAIL: email ? [{ VALUE: email, VALUE_TYPE: 'WORK' }] : undefined,
+      COMMENTS: comment,
+      SOURCE_ID: 'WEB'
+    }
   });
 
-  if (email) params.append('fields[EMAIL][0][VALUE]', email);
-
   try {
-    await fetch(WEBHOOK + 'crm.deal.add.json', {
+    const res = await fetch(WEBHOOK + 'crm.lead.add.json', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params.toString()
+      headers: { 'Content-Type': 'application/json' },
+      body
     });
+    const data = await res.json();
+    console.log('Bitrix24 response:', JSON.stringify(data));
+    if (data.error) {
+      console.error('Bitrix24 error:', data.error, data.error_description);
+    } else {
+      console.log('Лид создан, ID:', data.result);
+    }
   } catch (e) {
-    console.error('Bitrix24 error:', e);
+    console.error('Bitrix24 fetch error:', e);
   }
 }
 
