@@ -464,17 +464,12 @@ function hideForm() {
 }
 
 function buildDialogText() {
-  const lines = [];
-  const rows = document.querySelectorAll('#popupMessages .msg-row');
-  rows.forEach(row => {
-    const bubble = row.querySelector('.msg-bubble');
-    if (!bubble) return;
-    const text = bubble.innerText.trim();
-    if (!text) return;
-    if (row.classList.contains('user')) {
-      lines.push('👤 Пользователь: ' + text);
-    } else {
-      lines.push('🦉 Бот: ' + text);
+  const lines = ['🦉 Бот: Сова Семёновна поможет в оснащении Школ и ДОУ! Какой у вас вопрос?'];
+  history.forEach(msg => {
+    if (msg.role === 'user') {
+      lines.push('👤 Пользователь: ' + msg.content);
+    } else if (msg.role === 'assistant') {
+      lines.push('🦉 Бот: ' + msg.content);
     }
   });
   return lines.join('\n');
