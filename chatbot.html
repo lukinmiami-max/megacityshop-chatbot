@@ -484,47 +484,71 @@ function buildDialogText() {
 async function sendToBitrix(name, phone, email, dialogText) {
   const WEBHOOK = 'https://megacityshop.bitrix24.ru/rest/16/0yao8clemk5npdn3/';
 
-  // Шаг 1: создаём лид
-  const leadBody = JSON.stringify({
+  // Шаг 1: создаём сделку в воронке "Продажи", этап "Новая заявка"
+  const dealBody = JSON.stringify({
     fields: {
       TITLE: 'Заявка с сайта — ' + name,
-      NAME: name,
-      PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }],
-      EMAIL: email ? [{ VALUE: email, VALUE_TYPE: 'WORK' }] : undefined,
-      SOURCE_ID: 'WEB'
+      CONTACT_ID: 0,
+      CATEGORY_ID: 2,
+      STAGE_ID: 'C2:NEW',
+      SOURCE_ID: 'WEB',
+      UF_CRM_CONTACT_NAME: name
     }
   });
 
   try {
-    const res = await fetch(WEBHOOK + 'crm.lead.add.json', {
+    const res = await fetch(WEBHOOK + 'crm.deal.add.json', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: leadBody
+      body: dealBody
     });
     const data = await res.json();
-    const leadId = data.result;
-    console.log('Лид создан, ID:', leadId);
+    const dealId = data.result;
+    console.log('Сделка создана, ID:', dealId);
 
-    if (!leadId) {
+    if (!dealId) {
       console.error('Bitrix24 ошибка:', data.error, data.error_description);
       return;
     }
 
-    // Шаг 2: добавляем диалог как комментарий в таймлайн
-    const commentBody = JSON.stringify({
+    // Шаг 2: создаём контакт с именем и телефоном
+    const contactBody = JSON.stringify({
       fields: {
-        ENTITY_ID: leadId,
-        ENTITY_TYPE: 'lead',
-        COMMENT: '--- Диалог с Семёновной ---\n' + dialogText
+        NAME: name,
+        PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }],
+        EMAIL: email ? [{ VALUE: email, VALUE_TYPE: 'WORK' }] : undefined
       }
     });
+    const contactRes = await fetch(WEBHOOK + 'crm.contact.add.json', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: contactBody
+    });
+    const contactData = await contactRes.json();
+    const contactId = contactData.result;
 
+    // Привязываем контакт к сделке
+    if (contactId) {
+      await fetch(WEBHOOK + 'crm.deal.contact.add.json', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: dealId, fields: { CONTACT_ID: contactId } })
+      });
+    }
+
+    // Шаг 3: добавляем диалог как комментарий в таймлайн сделки
     await fetch(WEBHOOK + 'crm.timeline.comment.add.json', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: commentBody
+      body: JSON.stringify({
+        fields: {
+          ENTITY_ID: dealId,
+          ENTITY_TYPE: 'deal',
+          COMMENT: '--- Диалог с Семёновной ---\n' + dialogText
+        }
+      })
     });
-    console.log('Диалог добавлен в таймлайн');
+    console.log('Диалог добавлен в таймлайн сделки');
 
   } catch (e) {
     console.error('Bitrix24 fetch error:', e);
